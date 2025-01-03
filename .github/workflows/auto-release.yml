@@ -51,11 +51,13 @@ jobs:
         # Use sed or a similar tool to update the README
         sed -i "s|https://github.com/Operativekiwi/2004scape-extension/releases/download/v[0-9]*|$ZIP_URL|g" README.md
 
-        # Add and commit only the changes to README.md (skip extension.zip)
+        # Add only the changes to README.md and ignore extension.zip
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
         git add README.md
         git commit -m "Update README.md with latest .zip download link"
+        
+        # Explicitly push changes only for README.md
         git push origin main  # Or your default branch
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Explicitly passing the GitHub token
