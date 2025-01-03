@@ -15,6 +15,7 @@ jobs:
 
     - name: Zip the .crx file
       run: |
+        ls *.crx # Verify the .crx file is present
         crx_file=$(ls *.crx | head -n 1) # Find the first .crx file
         zip extension.zip "$crx_file" # Create a zip file named extension.zip
         ls -l # List files for debugging
@@ -31,6 +32,9 @@ jobs:
         commitish: ${{ github.sha }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Debug Release Creation
+      run: echo "Release created with URL: ${{ steps.create_release.outputs.upload_url }}"
 
     - name: Upload the zipped .crx file
       uses: actions/upload-release-asset@v1
