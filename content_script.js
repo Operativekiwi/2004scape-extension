@@ -383,7 +383,6 @@ function createNPCDropTableContent() {
     { file: 'unicorn.rs2', name: 'Unicorn' },
     { file: 'white_knight.rs2', name: 'White Knight' },
     { file: 'wizard.rs2', name: 'Wizard' },
-    { file: 'test.rs2', name: 'test' },
     { file: 'yanille_soldier_tower_guard.rs2', name: 'Yanille Tower Guard' },
     { file: 'zombie.rs2', name: 'Zombie' }
   ].sort((a, b) => a.name.localeCompare(b.name));
