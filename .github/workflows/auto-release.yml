@@ -24,11 +24,12 @@ jobs:
       with:
         tag_name: "v${{ github.run_number }}"
         release_name: "Auto Release v${{ github.run_number }}"
-        body: |
-          Auto-generated release with the latest .crx file.
+        body: Auto-generated release with the latest .crx file.
         draft: false
         prerelease: false
         commitish: ${{ github.sha }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload the zipped .crx file
       uses: actions/upload-release-asset@v1
