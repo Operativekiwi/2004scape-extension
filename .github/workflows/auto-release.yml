@@ -1,4 +1,4 @@
-name: Auto Release for .crx File
+name: Auto Release for zipped .crx File
 
 on:
   push:
@@ -30,12 +30,12 @@ jobs:
         prerelease: false
         commitish: ${{ github.sha }}
       env:
-        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} # Use the custom token
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload the zipped .crx file
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: "./extension.zip"
+        asset_path: "./extension.zip" # Fixed to match the zip file created earlier
         asset_name: "extension.zip"
         asset_content_type: "application/zip"
