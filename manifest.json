@@ -5,6 +5,7 @@
   "description": "Adds a dynamic world selector to the 2004Scape game client.",
   "permissions": ["scripting"],
   "host_permissions": ["https://2004scape.org/*"],
+  "update_url": "https://github.com/your-username/your-repository-name/raw/main/update.json",
   "content_scripts": [
     {
       "matches": ["https://2004scape.org/client*"],
