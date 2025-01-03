@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "2004Scape World Selector",
+  "version": "1.0",
+  "description": "Adds a dynamic world selector to the 2004Scape game client.",
+  "permissions": ["scripting"],
+  "host_permissions": ["https://2004scape.org/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://2004scape.org/client*"],
+      "js": ["content_script.js"]
+    }
+  ],
+  "icons": {
+    "48": "icons/world-icon.png"
+  }
+}

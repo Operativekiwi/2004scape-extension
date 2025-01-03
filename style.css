@@ -1,0 +1,27 @@
+/* Styles for the world selector UI */
+#world-selector {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+#world-selector h3 {
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+#world-selector a {
+  display: inline-block;
+  margin: 5px 0;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+#world-selector a:hover {
+  background-color: #0056b3;
+}
