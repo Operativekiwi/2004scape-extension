@@ -1,27 +1,25 @@
-# 2004scape-extension
+# 2004scape Extension
 
-## Installation Instructions
+## Download the Latest Version
 
-### 1. Download the Latest Version
-- Download the latest version of the extension as a `.zip` file from the [Releases page](https://github.com/Operativekiwi/2004scape-extension/releases/).
+To download the latest version of the extension, simply click the link below:
 
-### 2. Install in Chrome or Edge
+[Download Latest Version](https://github.com/Operativekiwi/2004scape-extension/releases/latest)
 
-#### For Google Chrome:
-1. Open Chrome and go to `chrome://extensions`.
-2. Enable **Developer mode** in the top right.
-3. Extract the `.zip` file to get the `.crx` file.
-4. Drag and drop the `.crx` file into the extensions page.
-5. Confirm by clicking **Add extension**.
+Alternatively, you can manually download the `.zip` file for the latest release:
 
-#### For Microsoft Edge:
-1. Open Edge and go to `edge://extensions`.
-2. Enable **Developer mode** at the bottom left.
-3. Extract the `.zip` file to get the `.crx` file.
-4. Drag and drop the `.crx` file into the extensions page.
-5. Confirm by clicking **Add extension**.
+- **Download ZIP**: [extension.zip](https://github.com/Operativekiwi/2004scape-extension/releases/download/v${{ github.run_number }}/extension.zip)
 
----
+### Installation Instructions
 
-For updates, simply download the latest `.zip` file from the [Releases page](https://github.com/Operativekiwi/2004scape-extension/releases/) and follow the installation steps.
+1. **Unzip the file** you just downloaded.
+2. Open Chrome (or another Chromium-based browser) and go to `chrome://extensions/`.
+3. **Enable Developer Mode** in the top-right corner.
+4. Click the **Load unpacked** button and select the unzipped extension folder.
+5. The extension should now appear in your browser and will display when on any 2004scape client e.g https://2004scape.org/client?world=1&detail=high&method=0
+
+### Notes
+
+- This extension is frequently updated. Check the [Releases Page](https://github.com/Operativekiwi/2004scape-extension/releases) for new updates.
+- For issues or feedback, open an [issue](https://github.com/Operativekiwi/2004scape-extension/issues) in the repository.
 
