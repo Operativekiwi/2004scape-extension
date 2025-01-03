@@ -5,7 +5,6 @@
   "description": "Adds a dynamic world selector to the 2004Scape game client.",
   "permissions": ["scripting"],
   "host_permissions": ["https://2004scape.org/*"],
-  "update_url": "https://raw.githubusercontent.com/Operativekiwi/2004scape-extension/refs/heads/main/update.json",
   "content_scripts": [
     {
       "matches": ["https://2004scape.org/client*"],
