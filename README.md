@@ -2,13 +2,10 @@
 
 ## Download the Latest Version
 
-To download the latest version of the extension, simply click the link below:
+To download the latest version of the extension, click the link below and click *extension.zip*
 
 [Download Latest Version](https://github.com/Operativekiwi/2004scape-extension/releases/latest)
 
-Alternatively, you can manually download the `.zip` file for the latest release:
-
-- **Download ZIP**: [extension.zip](https://github.com/Operativekiwi/2004scape-extension/releases/download/v${{ github.run_number }}/extension.zip)
 
 ### Installation Instructions
 
