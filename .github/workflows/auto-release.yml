@@ -6,7 +6,9 @@ on:
       - "content_script.js"
       - "manifest.json"
       - "style.css"
-      - "icons/**"  # Trigger when files in the 'icons' folder or any files inside it are updated
+      - "icons/**"
+      - "plugins/**/*.js"    # Include all .js files in the plugins folder
+      - "plugins/**/*.json"   # Include all .json files in the plugins folder
 
 jobs:
   release:
@@ -18,8 +20,8 @@ jobs:
 
     - name: Zip the extension files
       run: |
-        # Zip the required files and the entire 'icons' folder
-        zip -r extension.zip content_script.js manifest.json style.css icons/  # Recursively include the icons folder
+        # Zip the required files and the entire 'icons' and 'plugins' folders
+        zip -r extension.zip content_script.js manifest.json style.css icons/ plugins/  # Recursively include plugins and icons folders
         ls -l  # List files for debugging
 
     - name: Create a release
