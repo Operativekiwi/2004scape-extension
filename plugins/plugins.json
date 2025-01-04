@@ -1,7 +1,8 @@
 {
     "plugins": [
       "worldSelector.js",
-      "itemLookup.js"
+      "itemLookup.js",
+      "playerLookup.js"
     ]
   }
   
