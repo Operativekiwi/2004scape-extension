@@ -21,10 +21,35 @@ async function fetchPlayerData(playerName) {
     try {
       const url = `https://2004scape.org/player/adventurelog/${encodeURIComponent(playerName)}`;
       const response = await fetch(url);
-      return await response.text();
+      const html = await response.text();
+      
+      // Parse the HTML
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      // Find all log entries
+      const entries = [];
+      const logDivs = doc.querySelectorAll('div[style="text-align: left"]');
+      
+      logDivs.forEach(div => {
+        const timestamp = div.querySelector('span')?.textContent.trim() || '';
+        // Get the text content after the timestamp
+        const content = div.textContent.split('\n')
+          .map(line => line.trim())
+          .filter(line => line && !line.includes(timestamp))[0] || '';
+        
+        if (timestamp && content) {
+          entries.push({
+            timestamp,
+            content
+          });
+        }
+      });
+  
+      return entries;
     } catch (error) {
       console.error("Failed to fetch adventure log:", error);
-      return "";
+      return [];
     }
   }
   
@@ -139,29 +164,6 @@ async function fetchPlayerData(playerName) {
   
       resultContainer.appendChild(skillGrid);
   
-      // Adventure Log
-      const adventureLogText = await fetchAdventureLog(playerName);
-      const adventureLogEntries = adventureLogText
-        .split("\n")
-        .filter(line => /^\d{4}-\d{2}-\d{2}/.test(line))
-        .slice(0, 3);
-  
-      if (adventureLogEntries.length > 0) {
-        const logTitle = document.createElement("h4");
-        logTitle.textContent = "Recent Events";
-        logTitle.style.marginTop = "20px";
-        resultContainer.appendChild(logTitle);
-  
-        const logList = document.createElement("ul");
-        adventureLogEntries.forEach(entry => {
-          const logItem = document.createElement("li");
-          logItem.textContent = entry.trim();
-          logList.appendChild(logItem);
-        });
-  
-        resultContainer.appendChild(logList);
-      }
-  
       const logLink = document.createElement("a");
       logLink.href = `https://2004scape.org/player/adventurelog/${encodeURIComponent(playerName)}`;
       logLink.target = "_blank";
@@ -169,6 +171,37 @@ async function fetchPlayerData(playerName) {
       logLink.style.display = "block";
       logLink.style.marginTop = "10px";
       resultContainer.appendChild(logLink);
+  
+      // Display recent adventure log entries
+      const logEntries = await fetchAdventureLog(playerName);
+      if (logEntries.length > 0) {
+        const recentTitle = document.createElement("h4");
+        recentTitle.textContent = "Recent Events";
+        recentTitle.style.marginTop = "20px";
+        resultContainer.appendChild(recentTitle);
+  
+        const entriesContainer = document.createElement("div");
+        entriesContainer.style.marginTop = "10px";
+  
+        // Display up to 3 most recent entries
+        logEntries.slice(0, 3).forEach(entry => {
+          const entryDiv = document.createElement("div");
+          entryDiv.style.marginBottom = "10px";
+          
+          const timestamp = document.createElement("div");
+          timestamp.style.color = "#888";
+          timestamp.textContent = entry.timestamp;
+          
+          const content = document.createElement("div");
+          content.textContent = entry.content;
+          
+          entryDiv.appendChild(timestamp);
+          entryDiv.appendChild(content);
+          entriesContainer.appendChild(entryDiv);
+        });
+  
+        resultContainer.appendChild(entriesContainer);
+      }
     });
   
     return container;
@@ -187,4 +220,3 @@ async function fetchPlayerData(playerName) {
       }
     };
   }
-  
