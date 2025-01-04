@@ -1,14 +1,23 @@
 {
   "manifest_version": 3,
-  "name": "2004Scape tools",
-  "version": "1",
-  "description": "Swiftkit like plugins for 2004scape",
-  "permissions": ["scripting"],
+  "name": "2004Scape Tools",
+  "version": "1.0",
+  "description": "Swiftkit-like plugins for 2004scape",
+  "permissions": ["scripting", "storage"],
   "host_permissions": ["https://2004scape.org/*"],
   "content_scripts": [
     {
       "matches": ["https://2004scape.org/client*"],
       "js": ["content_script.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "plugins/*.js",
+        "plugins/plugins.json"
+      ],
+      "matches": ["<all_urls>"]
     }
   ],
   "icons": {
