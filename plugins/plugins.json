@@ -2,7 +2,8 @@
     "plugins": [
       "worldSelector.js",
       "itemLookup.js",
-      "playerLookup.js"
+      "playerLookup.js",
+      "ircChat.js"
     ]
   }
   
