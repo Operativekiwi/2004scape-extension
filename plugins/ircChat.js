@@ -1,56 +1,74 @@
-// ircChat.js
+let isIRCTabActive = false;
 
 function createIRCContent() {
-    const container = document.createElement("div");
-    container.id = "tab-irc-chat";
-  
-    const title = document.createElement("h3");
-    title.textContent = "IRC Chat";
-    container.appendChild(title);
-  
-    // Create iframe for Libera Chat webchat
-    const iframe = document.createElement("iframe");
-    iframe.style.width = "100%";
-    iframe.style.height = "450px"; // Adjusted to fit extension window better
-    iframe.style.border = "1px solid #333";
-    iframe.style.borderRadius = "4px";
-    iframe.style.backgroundColor = "#1a1a1a";
-    
-    // Set source to Libera Chat's webchat with #2004scape channel
-    iframe.src = "https://web.libera.chat/#2004scape";
-    
-    container.appendChild(iframe);
-  
-    // Add compact instructions
-    const instructions = document.createElement("div");
-    instructions.style.marginTop = "10px";
-    instructions.style.padding = "8px";
-    instructions.style.backgroundColor = "#2a2a2a";
-    instructions.style.borderRadius = "4px";
-    instructions.style.fontSize = "12px";
-    instructions.innerHTML = `
-      <strong>Quick Commands:</strong>
-      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-        <span>/nick newname</span>
-        <span>/join #channel</span>
-        <span>/msg user text</span>
-      </div>
-    `;
-    container.appendChild(instructions);
-  
-    return container;
+  const container = document.createElement("div");
+  container.id = "tab-irc-chat";
+
+  const title = document.createElement("h3");
+  title.textContent = "IRC Chat";
+  container.appendChild(title);
+
+  // Create a placeholder div to maintain space
+  const placeholder = document.createElement("div");
+  placeholder.style.height = "450px";
+  container.appendChild(placeholder);
+
+  if (!document.getElementById('persistent-irc-frame')) {
+    const fixedIframe = document.createElement("iframe");
+    fixedIframe.id = 'persistent-irc-frame';
+    fixedIframe.src = "https://web.libera.chat/#2004scape";
+    fixedIframe.style.position = "fixed";
+    fixedIframe.style.width = "180px";
+    fixedIframe.style.height = "450px";
+    fixedIframe.style.border = "1px solid #333";
+    fixedIframe.style.borderRadius = "4px";
+    fixedIframe.style.backgroundColor = "#1a1a1a";
+    fixedIframe.style.top = "70px";
+    fixedIframe.style.right = "20px";
+    fixedIframe.style.display = "none";
+    fixedIframe.style.zIndex = "10000";
+    document.body.appendChild(fixedIframe);
   }
-  
-  export default function () {
-    return {
-      name: "IRC Chat",
-      icon: "💬",
-      createContent: createIRCContent,
-      async init() {
-        console.log("IRC Chat Plugin Initialized.");
-      },
-      destroy() {
-        console.log("IRC Chat Plugin Destroyed.");
+
+  const iframe = document.getElementById('persistent-irc-frame');
+  if (iframe) {
+    isIRCTabActive = true;
+    iframe.style.display = "block";
+  }
+
+  return container;
+}
+
+function hideIRCFrame() {
+  const iframe = document.getElementById('persistent-irc-frame');
+  if (iframe && isIRCTabActive) {
+    iframe.style.display = "none";
+    isIRCTabActive = false;
+  }
+}
+
+// Add event listener to hide iframe when switching tabs
+document.addEventListener('click', (e) => {
+  // Check if click is on a different tab button
+  if (e.target.closest('button') && !e.target.title?.includes('IRC Chat')) {
+    hideIRCFrame();
+  }
+});
+
+export default function () {
+  return {
+    name: "IRC Chat",
+    icon: "💬",
+    createContent: createIRCContent,
+    async init() {
+      console.log("IRC Chat Plugin Initialized.");
+    },
+    destroy() {
+      const iframe = document.getElementById('persistent-irc-frame');
+      if (iframe) {
+        iframe.remove();
       }
-    };
-  }
+      console.log("IRC Chat Plugin Destroyed.");
+    }
+  };
+}
