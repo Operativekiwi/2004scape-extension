@@ -15,7 +15,7 @@
     {
       "resources": [
         "plugins/*.js",
-        "plugins/plugins.json"
+        "plugins/*.json"
       ],
       "matches": ["<all_urls>"]
     }

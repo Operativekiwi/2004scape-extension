@@ -1,0 +1,248 @@
+{
+    "Attack": [
+        {
+            "name": "Train on Chickens",
+            "icon": "icons/attack_chickens.png",
+            "exp": 4,
+            "level": 1
+        },
+        {
+            "name": "Train on Cows",
+            "icon": "icons/attack_cows.png",
+            "exp": 20,
+            "level": 10
+        }
+    ],
+    "Strength": [
+        {
+            "name": "Train on Rats",
+            "icon": "icons/strength_rats.png",
+            "exp": 4,
+            "level": 1
+        },
+        {
+            "name": "Train on Hill Giants",
+            "icon": "icons/strength_hill_giants.png",
+            "exp": 30,
+            "level": 15
+        }
+    ],
+    "Defence": [
+        {
+            "name": "Train on Goblins",
+            "icon": "icons/defence_goblins.png",
+            "exp": 4,
+            "level": 1
+        },
+        {
+            "name": "Train on Guards",
+            "icon": "icons/defence_guards.png",
+            "exp": 25,
+            "level": 10
+        }
+    ],
+    "Hitpoints": [
+        {
+            "name": "Train by Fighting",
+            "icon": "icons/hitpoints_fighting.png",
+            "exp": 1.33,
+            "level": 1
+        }
+    ],
+    "Mining": [
+        {
+            "name": "Mine Copper",
+            "icon": "icons/mining_copper.png",
+            "exp": 17.5,
+            "level": 1
+        },
+        {
+            "name": "Mine Iron",
+            "icon": "icons/mining_iron.png",
+            "exp": 35,
+            "level": 15
+        }
+    ],
+    "Smithing": [
+        {
+            "name": "Smelt Bronze Bar",
+            "icon": "icons/smithing_bronze_bar.png",
+            "exp": 6.25,
+            "level": 1
+        },
+        {
+            "name": "Smelt Iron Bar",
+            "icon": "icons/smithing_iron_bar.png",
+            "exp": 12.5,
+            "level": 15
+        }
+    ],
+    "Fishing": [
+        {
+            "name": "Net Shrimp",
+            "icon": "icons/fishing_shrimp.png",
+            "exp": 10,
+            "level": 1
+        },
+        {
+            "name": "Harpoon Tuna",
+            "icon": "icons/fishing_tuna.png",
+            "exp": 80,
+            "level": 35
+        }
+    ],
+    "Cooking": [
+        {
+            "name": "Cook Shrimp",
+            "icon": "icons/cooking_shrimp.png",
+            "exp": 30,
+            "level": 1
+        },
+        {
+            "name": "Cook Trout",
+            "icon": "icons/cooking_trout.png",
+            "exp": 70,
+            "level": 15
+        }
+    ],
+    "Woodcutting": [
+        {
+            "name": "Cut Normal Trees",
+            "icon": "icons/woodcutting_normal_tree.png",
+            "exp": 25,
+            "level": 1
+        },
+        {
+            "name": "Cut Oak Trees",
+            "icon": "icons/woodcutting_oak_tree.png",
+            "exp": 37.5,
+            "level": 15
+        }
+    ],
+    "Firemaking": [
+        {
+            "name": "Burn Normal Logs",
+            "icon": "icons/firemaking_normal_logs.png",
+            "exp": 40,
+            "level": 1
+        },
+        {
+            "name": "Burn Oak Logs",
+            "icon": "icons/firemaking_oak_logs.png",
+            "exp": 60,
+            "level": 15
+        }
+    ],
+    "Crafting": [
+        {
+            "name": "Make Leather Gloves",
+            "icon": "icons/crafting_leather_gloves.png",
+            "exp": 13.75,
+            "level": 1
+        },
+        {
+            "name": "Cut Sapphire",
+            "icon": "icons/crafting_sapphire.png",
+            "exp": 50,
+            "level": 20
+        }
+    ],
+    "Runecraft": [
+        {
+            "name": "Craft Air Runes",
+            "icon": "icons/runecraft_air_runes.png",
+            "exp": 5,
+            "level": 1
+        },
+        {
+            "name": "Craft Mind Runes",
+            "icon": "icons/runecraft_mind_runes.png",
+            "exp": 7.5,
+            "level": 2
+        }
+    ],
+    "Agility": [
+        {
+            "name": "Gnome Stronghold Course",
+            "icon": "icons/agility_gnome_course.png",
+            "exp": 86.5,
+            "level": 1
+        },
+        {
+            "name": "Draynor Village Rooftop Course",
+            "icon": "icons/agility_draynor_course.png",
+            "exp": 120,
+            "level": 10
+        }
+    ],
+    "Herblore": [
+        {
+            "name": "Clean Guam Leaf",
+            "icon": "icons/herblore_guam_leaf.png",
+            "exp": 2.5,
+            "level": 3
+        },
+        {
+            "name": "Make Attack Potion",
+            "icon": "icons/herblore_attack_potion.png",
+            "exp": 25,
+            "level": 3
+        }
+    ],
+    "Fletching": [
+        {
+            "name": "Fletch Arrow Shafts",
+            "icon": "icons/fletching_arrow_shafts.png",
+            "exp": 5,
+            "level": 1
+        },
+        {
+            "name": "Fletch Oak Shortbow",
+            "icon": "icons/fletching_oak_shortbow.png",
+            "exp": 16.5,
+            "level": 15
+        }
+    ],
+    "Magic": [
+        {
+            "name": "Cast Wind Strike",
+            "icon": "icons/magic_wind_strike.png",
+            "exp": 5.5,
+            "level": 1
+        },
+        {
+            "name": "Cast Water Strike",
+            "icon": "icons/magic_water_strike.png",
+            "exp": 7.5,
+            "level": 5
+        }
+    ],
+    "Prayer": [
+        {
+            "name": "Bury Bones",
+            "icon": "icons/prayer_bones.png",
+            "exp": 4.5,
+            "level": 1
+        },
+        {
+            "name": "Bury Big Bones",
+            "icon": "icons/prayer_big_bones.png",
+            "exp": 15,
+            "level": 15
+        }
+    ],
+    "Thieving": [
+        {
+            "name": "Pickpocket Men/Women",
+            "icon": "icons/thieving_men_women.png",
+            "exp": 8,
+            "level": 1
+        },
+        {
+            "name": "Pickpocket Farmers",
+            "icon": "icons/thieving_farmers.png",
+            "exp": 14.5,
+            "level": 10
+        }
+    ]
+}
