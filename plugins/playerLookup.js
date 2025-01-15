@@ -1,6 +1,6 @@
 async function fetchPlayerData(playerName) {
     try {
-      const url = `https://2004scape.org/mod/session/${encodeURIComponent(playerName)}`;
+      const url = `https://2004.lostcity.rs/mod/session/${encodeURIComponent(playerName)}`;
       const response = await fetch(url);
   
       if (response.redirected) {
@@ -19,7 +19,7 @@ async function fetchPlayerData(playerName) {
   
   async function fetchAdventureLog(playerName) {
     try {
-      const url = `https://2004scape.org/player/adventurelog/${encodeURIComponent(playerName)}`;
+      const url = `https://2004.lostcity.rs/player/adventurelog/${encodeURIComponent(playerName)}`;
       const response = await fetch(url);
       const html = await response.text();
       
@@ -165,7 +165,7 @@ async function fetchPlayerData(playerName) {
       resultContainer.appendChild(skillGrid);
   
       const logLink = document.createElement("a");
-      logLink.href = `https://2004scape.org/player/adventurelog/${encodeURIComponent(playerName)}`;
+      logLink.href = `https://2004.lostcity.rs/player/adventurelog/${encodeURIComponent(playerName)}`;
       logLink.target = "_blank";
       logLink.textContent = "View Full Adventure Log";
       logLink.style.display = "block";
