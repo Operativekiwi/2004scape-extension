@@ -9,6 +9,10 @@
     {
       "matches": ["https://2004scape.org/client*"],
       "js": ["content_script.js"]
+    },
+    {
+      "matches": ["https://2004.lostcity.rs/client*"],
+      "js": ["content_script.js"]
     }
   ],
   "web_accessible_resources": [

@@ -18,7 +18,7 @@ async function waitForContainer(timeout = 5000) {
   
   async function fetchWorlds() {
     try {
-      const response = await fetch("https://2004scape.org/serverlist?hires.x=63&hires.y=19&method=0");
+      const response = await fetch("https://2004.lostcity.rs/serverlist?hires.x=63&hires.y=19&method=0");
       const text = await response.text();
   
       const parser = new DOMParser();
@@ -61,7 +61,7 @@ async function waitForContainer(timeout = 5000) {
     const worlds = await fetchWorlds();
     worlds.forEach(({ world, players }) => {
       const link = document.createElement("a");
-      link.href = `https://2004scape.org/client?world=${world}&detail=high&method=0`;
+      link.href = `https://2004.lostcity.rs/client?world=${world}&detail=high&method=0`;
   
       if (world === currentWorld) {
         link.textContent = `World ${world} (${players}) ← Current World`;
