@@ -7,8 +7,8 @@ on:
       - "manifest.json"
       - "style.css"
       - "icons/**"
-      - "plugins/**/*.js"    # Include all .js files in the plugins folder
-      - "plugins/**/*.json"   # Include all .json files in the plugins folder
+      - "plugins/**/*.js"
+      - "plugins/**/*.json"
 
 jobs:
   release:
@@ -18,11 +18,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Zip the extension files
+    - name: Prepare Chrome extension
       run: |
-        # Zip the required files and the entire 'icons' and 'plugins' folders
-        zip -r extension.zip content_script.js manifest.json style.css icons/ plugins/  # Recursively include plugins and icons folders
-        ls -l  # List files for debugging
+        cp manifest.json manifest.chrome.json
+        zip -r chrome-extension.zip content_script.js manifest.json style.css icons/ plugins/
+        ls -l
+
+    - name: Prepare Firefox extension
+      run: |
+        # Update manifest for Firefox
+        jq '.browser_specific_settings = {gecko: {id: "2004scape-tools@developer.mozilla.org", strict_min_version: "91.0"}}' manifest.json > manifest.firefox.json
+        mv manifest.firefox.json manifest.json
+        zip -r firefox-extension.zip content_script.js manifest.json style.css icons/ plugins/
+        ls -l
 
     - name: Create a release
       id: create_release
@@ -35,14 +43,24 @@ jobs:
         prerelease: false
         commitish: ${{ github.sha }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Explicitly passing the GitHub token
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload the zipped extension file
+    - name: Upload Chrome extension
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: "./extension.zip"
-        asset_name: "extension.zip"
+        asset_path: "./chrome-extension.zip"
+        asset_name: "chrome-extension.zip"
         asset_content_type: "application/zip"
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Explicitly passing the GitHub token
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Firefox extension
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: "./firefox-extension.zip"
+        asset_name: "firefox-extension.zip"
+        asset_content_type: "application/zip"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

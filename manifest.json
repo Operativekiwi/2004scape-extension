@@ -26,5 +26,11 @@
   ],
   "icons": {
     "48": "icons/world-icon.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "2004scape-tools@developer.mozilla.org",
+      "strict_min_version": "91.0"
+    }
   }
 }
