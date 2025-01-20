@@ -49,7 +49,8 @@ async function fetchWorlds() {
 async function getPing(serverAddress) {
   const start = performance.now();
   try {
-      await fetch(serverAddress, { method: "HEAD", mode: "no-cors" }); // Using HEAD for minimal data transfer
+      await fetch(serverAddress, { method: "HEAD", mode: "no-cors", headers: { Range: "bytes=0-1" }
+      }); // Using HEAD for minimal data transfer
       const end = performance.now();
       return Math.round(end - start); // Return time in milliseconds
   } catch (error) {
