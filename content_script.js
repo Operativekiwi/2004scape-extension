@@ -132,6 +132,38 @@ async function createVerticalTabsContainer() {
   tabsContainer.style.overflow = "hidden";
   tabsContainer.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.2)";
   tabsContainer.style.display = "flex";
+  tabsContainer.style.resize = "both";
+  tabsContainer.style.overflow = "auto";
+
+  // Drag functionality
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  tabsContainer.addEventListener("mousedown", (e) => {
+    if (e.target === tabsContainer) {
+      isDragging = true;
+      offsetX = e.clientX - tabsContainer.getBoundingClientRect().left;
+      offsetY = e.clientY - tabsContainer.getBoundingClientRect().top;
+      tabsContainer.style.cursor = "move";
+    }
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (isDragging) {
+      const newX = e.clientX - offsetX;
+      const newY = e.clientY - offsetY;
+      tabsContainer.style.left = `${newX}px`;
+      tabsContainer.style.top = `${newY}px`;
+      tabsContainer.style.right = "";
+    }
+  });
+
+  document.addEventListener("mouseup", () => {
+    if (isDragging) {
+      isDragging = false;
+      tabsContainer.style.cursor = "default";
+    }
+  });
 
   const tabsBar = document.createElement("div");
   tabsBar.style.width = "50px";
@@ -148,8 +180,8 @@ async function createVerticalTabsContainer() {
   // Create buttons for each plugin
   pluginManager.plugins.forEach((plugin, index) => {
     const button = document.createElement("button");
-    button.textContent = plugin.icon || "🔌";  // Use icon with fallback
-    button.title = plugin.name;  // Add tooltip with plugin name
+    button.textContent = plugin.icon || "🔌";
+    button.title = plugin.name;
     button.style.margin = "10px 0";
     button.style.background = "none";
     button.style.border = "none";
@@ -168,7 +200,6 @@ async function createVerticalTabsContainer() {
 
     tabsBar.appendChild(button);
 
-    // Automatically click the first button to load its content
     if (index === 0) {
       button.click();
     }
@@ -180,11 +211,9 @@ async function createVerticalTabsContainer() {
   document.body.appendChild(tabsContainer);
 }
 
-
 function refreshTabBar() {
   const tabsContainer = document.getElementById("vertical-tabs-container");
   if (tabsContainer) {
-    // Remove existing container and recreate it
     tabsContainer.remove();
     createVerticalTabsContainer();
   }
@@ -197,7 +226,6 @@ const pluginManager = {
     try {
       const module = await pluginModule;
       const pluginFactory = module.default;
-      
       if (typeof pluginFactory !== "function") {
         console.error("Plugin must export a function as default export");
         return;
@@ -213,7 +241,7 @@ const pluginManager = {
       await plugin.init();
       console.log(`Plugin loaded: ${plugin.name}`);
       this.onPluginChange?.();
-      refreshTabBar(); // Refresh the tab bar
+      refreshTabBar();
     } catch (error) {
       console.error("Failed to load plugin:", error);
     }
@@ -225,19 +253,17 @@ const pluginManager = {
       this.plugins.splice(index, 1);
       console.log(`Plugin unloaded: ${pluginName}`);
       this.onPluginChange?.();
-      refreshTabBar(); // Refresh the tab bar
+      refreshTabBar();
     } else {
       console.error(`Plugin not found: ${pluginName}`);
     }
   },
 };
 
-// Fetch the list of plugins from the JSON file
 async function loadPluginsFromJSON() {
   try {
     const response = await fetch(chrome.runtime.getURL("plugins/plugins.json"));
     const data = await response.json();
-
     if (data.plugins && Array.isArray(data.plugins)) {
       for (const pluginFile of data.plugins) {
         const pluginPath = chrome.runtime.getURL(`plugins/${pluginFile}`);
@@ -251,21 +277,15 @@ async function loadPluginsFromJSON() {
   }
 }
 
-// Initialize everything after DOM is ready
 async function initialize() {
-  // Create the vertical tabs container first
   await createVerticalTabsContainer();
-
-  // Then load plugins
   await loadPluginsFromJSON();
 }
 
-// Wait for DOM to be ready
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initialize);
 } else {
   initialize();
 }
 
-// Expose plugin manager to global scope for user-defined plugins
 window.pluginManager = pluginManager;
