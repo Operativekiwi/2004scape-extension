@@ -1,219 +1,236 @@
 async function waitForContainer(timeout = 5000) {
-  return new Promise((resolve, reject) => {
-      const startTime = Date.now();
+    return new Promise((resolve, reject) => {
+        const startTime = Date.now();
 
-      const checkContainer = () => {
-          const container = document.getElementById("vertical-tabs-container");
-          if (container) {
-              resolve(container);
-          } else if (Date.now() - startTime > timeout) {
-              reject(new Error("Timeout waiting for container"));
-          } else {
-              setTimeout(checkContainer, 100);
-          }
-      };
-      checkContainer();
-  });
+        const checkContainer = () => {
+            const container = document.getElementById("vertical-tabs-container");
+            if (container) {
+                resolve(container);
+            } else if (Date.now() - startTime > timeout) {
+                reject(new Error("Timeout waiting for container"));
+            } else {
+                setTimeout(checkContainer, 100);
+            }
+        };
+        checkContainer();
+    });
 }
 
+/**
+ * 1) Parses the HTML from /serverlist row by row, allowing multiple region headings (flag rows)
+ *    inside the same <table>. Each new heading row updates currentFlagSrc for subsequent worlds.
+ */
 async function fetchWorlds() {
-  try {
-      const response = await fetch("https://2004.lostcity.rs/api/v1/worldlist");
-      const data = await response.json();
+    try {
+        // Fetch the raw HTML
+        const response = await fetch("https://2004.lostcity.rs/serverlist?hires.x=101&hires.y=41&method=0");
+        const html = await response.text();
 
-      // Map regions to flag URLs
-      const regionFlags = {
-          "United States": "/img/gamewin/usflag.gif",
-          "Germany": "/img/gamewin/gerflag.gif",
-          "Russia": "/img/gamewin/rusflag.gif"
-      };
+        // Parse into a DOM
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
 
-      const worlds = data.map((world) => {
-          const flagSrc = regionFlags[world.region] || null;
-          return {
-              world: world.id,
-              region: world.region,
-              players: world.players,
-              flagSrc,
-              address: world.address
-          };
-      });
+        const worlds = [];
 
-      return worlds;
-  } catch (error) {
-      console.error("Failed to fetch world list from API:", error);
-      return [];
-  }
+        // Each <td align="center" width="165"> may contain multiple region headings
+        const regionTables = doc.querySelectorAll("table > tbody > tr > td > table");
+        regionTables.forEach((regionTable) => {
+            const rows = regionTable.querySelectorAll("tr");
+
+            let currentFlagSrc = null;  // We'll update this each time we see a new heading row
+
+            rows.forEach((row) => {
+                const imgEl = row.querySelector("img");
+                const link = row.querySelector("a");
+
+                // A row with an <img> but NO <a> is a region heading row
+                // E.g.  <tr><td colspan="2"><img src="/img/gamewin/usflag.gif"> United States</td></tr>
+                if (imgEl && !link) {
+                    currentFlagSrc = imgEl.getAttribute("src");
+                    return;
+                }
+
+                // A row with an <a> is a "world row"
+                // E.g.  <tr><td><a href="/client?world=1...">World 1</a></td> <td>8 players</td></tr>
+                if (link) {
+                    // Extract world # from the href
+                    const match = link.href.match(/world=(\d+)/);
+                    if (!match) return; 
+                    const worldNumber = parseInt(match[1], 10);
+
+                    // Extract "X players" from the last cell
+                    const playerCell = row.querySelector("td:last-child");
+                    let players = 0;
+                    if (playerCell) {
+                        const txt = playerCell.textContent.trim();
+                        const playersMatch = txt.match(/(\d+)\s*players/);
+                        if (playersMatch) {
+                            players = parseInt(playersMatch[1], 10);
+                        }
+                    }
+
+                    worlds.push({
+                        flagSrc: currentFlagSrc || "",  // Fallback if no heading found
+                        world: worldNumber,
+                        players,
+                    });
+                }
+            });
+        });
+
+        return worlds;
+    } catch (error) {
+        console.error("Failed to fetch or parse world list:", error);
+        return [];
+    }
 }
 
-async function getPing(serverAddress) {
-  const start = performance.now();
-  try {
-      await fetch(serverAddress, { method: "HEAD", mode: "no-cors", headers: { Range: "bytes=0-1" }
-      }); // Using HEAD for minimal data transfer
-      const end = performance.now();
-      return Math.round(end - start); // Return time in milliseconds
-  } catch (error) {
-      console.error(`Failed to ping ${serverAddress}:`, error);
-      return "N/A"; // Return "N/A" if the ping fails
-  }
-}
-
+/** 2) Simple sort so we can click table headers for “world” or “players” columns */
 function sortWorlds(worlds, key, ascending = true) {
-  return [...worlds].sort((a, b) => {
-      if (a[key] === "N/A" || b[key] === "N/A") return a[key] === "N/A" ? 1 : -1; // Handle "N/A" last
-      if (typeof a[key] === "number") {
-          return ascending ? a[key] - b[key] : b[key] - a[key];
-      }
-      return ascending
-          ? a[key].toString().localeCompare(b[key].toString())
-          : b[key].toString().localeCompare(a[key].toString());
-  });
+    return [...worlds].sort((a, b) => {
+        if (typeof a[key] === "number" && typeof b[key] === "number") {
+            return ascending ? a[key] - b[key] : b[key] - a[key];
+        }
+        return ascending
+            ? String(a[key]).localeCompare(String(b[key]))
+            : String(b[key]).localeCompare(String(a[key]));
+    });
 }
 
+/** 3) Build the “World Selector” DOM: a table with columns [Flag, World, Players] */
 async function createWorldSelectorContent() {
-  const container = document.createElement("div");
-  container.id = "tab-world-selector";
+    const container = document.createElement("div");
+    container.id = "tab-world-selector";
 
-  const title = document.createElement("h3");
-  title.textContent = "Select a World";
-  container.appendChild(title);
+    const title = document.createElement("h3");
+    title.textContent = "Select a World";
+    container.appendChild(title);
 
-  let worlds = await fetchWorlds();
-  const currentWorld = new URLSearchParams(window.location.search).get("world");
+    // Fetch worlds from the HTML
+    let worlds = await fetchWorlds();
+    const currentWorld = new URLSearchParams(window.location.search).get("world");
 
-  const table = document.createElement("table");
-  table.style.width = "100%";
-  table.style.borderCollapse = "collapse";
-  table.style.textAlign = "left";
+    // Create a table
+    const table = document.createElement("table");
+    table.style.width = "100%";
+    table.style.borderCollapse = "collapse";
+    table.style.textAlign = "left";
 
-  // Create headers with sorting functionality
-  const headers = [
-      { key: "region", text: "🌎" },
-      { key: "world", text: "🌐" },
-      { key: "players", text: "👥" },
-      { key: "ping", text: "📡" }
-  ];
+    // Table headers for [Flag | World | Players]
+    const headers = [
+        { key: "flagSrc", text: "🌎" },
+        { key: "world", text: "🌐" },
+        { key: "players", text: "🧍‍♂️" },
+    ];
 
-  const headerRow = document.createElement("tr");
-  headers.forEach(({ key, text }) => {
-      const th = document.createElement("th");
-      th.textContent = text;
-      th.style.cursor = "pointer";
-      th.style.padding = "8px";
-      th.style.borderBottom = "2px solid #ccc";
+    const headerRow = document.createElement("tr");
+    headers.forEach(({ key, text }) => {
+        const th = document.createElement("th");
+        th.textContent = text;
+        th.style.cursor = "pointer";
+        th.style.padding = "8px";
+        th.style.borderBottom = "2px solid #ccc";
 
-      let ascending = true; // Default sort order
+        let ascending = true;
+        th.addEventListener("click", () => {
+            // Sorting by "flagSrc" is possible, but not that useful
+            worlds = sortWorlds(worlds, key, ascending);
+            ascending = !ascending;
+            renderTableBody(worlds, tableBody, currentWorld);
+        });
 
-      th.addEventListener("click", async () => {
-          if (key === "ping") {
-              // Fetch pings before sorting by ping
-              for (const world of worlds) {
-                  if (!world.ping) world.ping = await getPing(world.address);
-              }
-          }
-          worlds = sortWorlds(worlds, key, ascending);
-          ascending = !ascending; // Toggle sort order
-          renderTableBody(worlds, tableBody, currentWorld);
-      });
+        headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
 
-      headerRow.appendChild(th);
-  });
-  table.appendChild(headerRow);
+    // Table body
+    const tableBody = document.createElement("tbody");
+    table.appendChild(tableBody);
+    container.appendChild(table);
 
-  // Create table body
-  const tableBody = document.createElement("tbody");
-  table.appendChild(tableBody);
-  container.appendChild(table);
+    // Initial rendering
+    renderTableBody(worlds, tableBody, currentWorld);
 
-  // Render initial table body
-  renderTableBody(worlds, tableBody, currentWorld);
-
-  return container;
+    return container;
 }
 
+/** 4) Renders each row with [Flag | World | Players] – no region names. */
 function renderTableBody(worlds, tableBody, currentWorld) {
-  tableBody.innerHTML = ""; // Clear existing rows
+    tableBody.innerHTML = "";
 
-  worlds.forEach(async ({ world, region, players, flagSrc, address, ping }) => {
-      const row = document.createElement("tr");
+    worlds.forEach(({ flagSrc, world, players }) => {
+        const row = document.createElement("tr");
 
-      // Location with flag only
-      const locationCell = document.createElement("td");
-      locationCell.style.padding = "8px";
-      if (flagSrc) {
-          const flag = document.createElement("img");
-          flag.src = flagSrc;
-          flag.alt = `Flag for ${region}`;
-          flag.style.width = "20px";
-          flag.style.height = "15px";
-          locationCell.appendChild(flag);
-      }
-      row.appendChild(locationCell);
+        // 1) Flag cell
+        const flagCell = document.createElement("td");
+        flagCell.style.padding = "8px";
+        if (flagSrc) {
+            const flagImg = document.createElement("img");
+            flagImg.src = flagSrc;
+            flagImg.alt = "flag";
+            flagImg.style.width = "20px";
+            flagImg.style.height = "15px";
+            flagCell.appendChild(flagImg);
+        } else {
+            // If missing, just leave blank
+            flagCell.textContent = "";
+        }
+        row.appendChild(flagCell);
 
-      // World number as a hyperlink
-      const worldCell = document.createElement("td");
-      const worldLink = document.createElement("a");
-      worldLink.href = `https://2004.lostcity.rs/client?world=${world}&detail=high&method=0`;
-      worldLink.textContent = currentWorld === world.toString() ? `World ${world} (current)` : `World ${world}`;
-      worldCell.style.padding = "8px";
-      worldCell.appendChild(worldLink);
-      row.appendChild(worldCell);
+        // 2) World cell with hyperlink
+        const worldCell = document.createElement("td");
+        worldCell.style.padding = "8px";
+        const link = document.createElement("a");
+        link.href = `https://2004.lostcity.rs/client?world=${world}&detail=high&method=0`;
+        link.textContent = (currentWorld === String(world))
+            ? `World ${world} (current)`
+            : `World ${world}`;
+        worldCell.appendChild(link);
+        row.appendChild(worldCell);
 
-      // Player count
-      const playersCell = document.createElement("td");
-      playersCell.textContent = players;
-      playersCell.style.padding = "8px";
-      row.appendChild(playersCell);
+        // 3) Players cell
+        const playersCell = document.createElement("td");
+        playersCell.style.padding = "8px";
+        playersCell.textContent = players;
+        row.appendChild(playersCell);
 
-      // Ping
-      const pingCell = document.createElement("td");
-      pingCell.textContent = ping ? `${ping}ms` : "Calculating...";
-      pingCell.style.padding = "8px";
-
-      if (!ping) {
-          // Dynamically update ping when fetched
-          const calculatedPing = await getPing(address);
-          pingCell.textContent = `${calculatedPing}ms`;
-      }
-
-      row.appendChild(pingCell);
-
-      tableBody.appendChild(row);
-  });
+        tableBody.appendChild(row);
+    });
 }
 
+/** 5) Add the plugin tab */
 async function addTab(name, content) {
-  const tabsContainer = await waitForContainer();
-  const tabsBar = tabsContainer.querySelector("div:first-child");
-  const tabContent = tabsContainer.querySelector("div:last-child");
+    const tabsContainer = await waitForContainer();
+    const tabsBar = tabsContainer.querySelector("div:first-child");
+    const tabContent = tabsContainer.querySelector("div:last-child");
 
-  const button = document.createElement("button");
-  button.textContent = name;
-  button.style.margin = "10px 0";
-  button.style.background = "none";
-  button.style.border = "none";
-  button.style.color = "#fff";
-  button.style.cursor = "pointer";
-  button.style.fontSize = "14px";
-  button.style.width = "100%";
-  button.addEventListener("click", () => {
-      tabContent.replaceChildren(content);
-  });
+    const button = document.createElement("button");
+    button.textContent = name;
+    button.style.margin = "10px 0";
+    button.style.background = "none";
+    button.style.border = "none";
+    button.style.color = "#fff";
+    button.style.cursor = "pointer";
+    button.style.fontSize = "14px";
+    button.style.width = "100%";
+    button.addEventListener("click", () => {
+        tabContent.replaceChildren(content);
+    });
 
-  tabsBar.appendChild(button);
+    tabsBar.appendChild(button);
 }
 
+/** 6) Export the plugin */
 export default function () {
-  return {
-      name: "World Selector",
-      icon: "🌍",
-      createContent: createWorldSelectorContent,
-      async init() {
-          console.log("World Selector Plugin Initialized.");
-      },
-      destroy() {
-          console.log("World Selector Plugin Destroyed.");
-      },
-  };
+    return {
+        name: "World Selector",
+        icon: "🌍",
+        createContent: createWorldSelectorContent,
+        async init() {
+            console.log("World Selector Plugin Initialized.");
+        },
+        destroy() {
+            console.log("World Selector Plugin Destroyed.");
+        },
+    };
 }
