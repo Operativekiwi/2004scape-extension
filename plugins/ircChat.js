@@ -17,7 +17,7 @@ function createIRCContent() {
     const fixedIframe = document.createElement("iframe");
     fixedIframe.id = 'persistent-irc-frame';
     fixedIframe.src = "https://web.libera.chat/#2004scape";
-    fixedIframe.style.position = "fixed";
+    fixedIframe.style.position = "absolute";
     fixedIframe.style.width = "180px";
     fixedIframe.style.height = "450px";
     fixedIframe.style.border = "1px solid #333";
@@ -27,7 +27,13 @@ function createIRCContent() {
     fixedIframe.style.right = "20px";
     fixedIframe.style.display = "none";
     fixedIframe.style.zIndex = "10000";
-    document.body.appendChild(fixedIframe);
+    const sidebar = document.getElementById("vertical-tabs-container");
+    if (sidebar) {
+        sidebar.appendChild(fixedIframe);
+    } else {
+        document.body.appendChild(fixedIframe);
+    }
+    
   }
 
   const iframe = document.getElementById('persistent-irc-frame');

@@ -16,10 +16,7 @@ async function waitForContainer(timeout = 5000) {
     });
 }
 
-/**
- * 1) Parses the HTML from /serverlist row by row, allowing multiple region headings (flag rows)
- *    inside the same <table>. Each new heading row updates currentFlagSrc for subsequent worlds.
- */
+
 async function fetchWorlds() {
     try {
         // Fetch the raw HTML
@@ -43,15 +40,11 @@ async function fetchWorlds() {
                 const imgEl = row.querySelector("img");
                 const link = row.querySelector("a");
 
-                // A row with an <img> but NO <a> is a region heading row
-                // E.g.  <tr><td colspan="2"><img src="/img/gamewin/usflag.gif"> United States</td></tr>
                 if (imgEl && !link) {
                     currentFlagSrc = imgEl.getAttribute("src");
                     return;
                 }
 
-                // A row with an <a> is a "world row"
-                // E.g.  <tr><td><a href="/client?world=1...">World 1</a></td> <td>8 players</td></tr>
                 if (link) {
                     // Extract world # from the href
                     const match = link.href.match(/world=(\d+)/);
@@ -85,7 +78,6 @@ async function fetchWorlds() {
     }
 }
 
-/** 2) Simple sort so we can click table headers for “world” or “players” columns */
 function sortWorlds(worlds, key, ascending = true) {
     return [...worlds].sort((a, b) => {
         if (typeof a[key] === "number" && typeof b[key] === "number") {
@@ -97,7 +89,59 @@ function sortWorlds(worlds, key, ascending = true) {
     });
 }
 
-/** 3) Build the “World Selector” DOM: a table with columns [Flag, World, Players] */
+async function updatePlayerCounts(tableBody, worlds) {
+    try {
+        const updatedWorlds = await fetchWorlds();
+        
+        
+        updatedWorlds.forEach(updatedWorld => {
+            const existingWorld = worlds.find(w => w.world === updatedWorld.world);
+            if (existingWorld) {
+                existingWorld.players = updatedWorld.players;
+            }
+        });
+
+        renderTableBody(worlds, tableBody);
+    } catch (error) {
+        console.error("Failed to update player counts:", error);
+    }
+}
+
+function addRefreshButton(container, tableBody, worlds) {
+    const refreshButton = document.createElement("button");
+    refreshButton.textContent = "🔄 Refresh Player Counts";
+    refreshButton.style.margin = "10px 0";
+    refreshButton.style.padding = "5px 10px";
+    refreshButton.style.cursor = "pointer";
+    refreshButton.addEventListener("click", () => updatePlayerCounts(tableBody, worlds));
+    
+    container.appendChild(refreshButton);
+}
+
+function addAutoRefreshToggle(container, tableBody, worlds) {
+    const label = document.createElement("label");
+    label.style.display = "block";
+    label.style.margin = "10px 0";
+    
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.style.marginRight = "5px";
+    
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(" Auto Refresh"));
+    container.appendChild(label);
+    
+    let interval = null;
+    
+    checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+            interval = setInterval(() => updatePlayerCounts(tableBody, worlds), 30000); // Auto-refresh every 30 sec
+        } else {
+            clearInterval(interval);
+        }
+    });
+}
+
 async function createWorldSelectorContent() {
     const container = document.createElement("div");
     container.id = "tab-world-selector";
@@ -106,17 +150,13 @@ async function createWorldSelectorContent() {
     title.textContent = "Select a World";
     container.appendChild(title);
 
-    // Fetch worlds from the HTML
     let worlds = await fetchWorlds();
-    const currentWorld = new URLSearchParams(window.location.search).get("world");
-
-    // Create a table
+    
     const table = document.createElement("table");
     table.style.width = "100%";
     table.style.borderCollapse = "collapse";
     table.style.textAlign = "left";
 
-    // Table headers for [Flag | World | Players]
     const headers = [
         { key: "flagSrc", text: "🌎" },
         { key: "world", text: "🌐" },
@@ -130,27 +170,27 @@ async function createWorldSelectorContent() {
         th.style.cursor = "pointer";
         th.style.padding = "8px";
         th.style.borderBottom = "2px solid #ccc";
-
+        
         let ascending = true;
         th.addEventListener("click", () => {
-            // Sorting by "flagSrc" is possible, but not that useful
             worlds = sortWorlds(worlds, key, ascending);
             ascending = !ascending;
-            renderTableBody(worlds, tableBody, currentWorld);
+            renderTableBody(worlds, tableBody);
         });
 
         headerRow.appendChild(th);
     });
     table.appendChild(headerRow);
 
-    // Table body
     const tableBody = document.createElement("tbody");
     table.appendChild(tableBody);
     container.appendChild(table);
 
-    // Initial rendering
-    renderTableBody(worlds, tableBody, currentWorld);
+    renderTableBody(worlds, tableBody);
 
+    addRefreshButton(container, tableBody, worlds);
+    addAutoRefreshToggle(container, tableBody, worlds);
+    
     return container;
 }
 
