@@ -194,9 +194,15 @@ async function createWorldSelectorContent() {
     return container;
 }
 
-/** 4) Renders each row with [Flag | World | Players] – no region names. */
-function renderTableBody(worlds, tableBody, currentWorld) {
+function getCurrentWorldFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("world");
+}
+
+function renderTableBody(worlds, tableBody) {
     tableBody.innerHTML = "";
+
+    const currentWorld = getCurrentWorldFromURL();
 
     worlds.forEach(({ flagSrc, world, players }) => {
         const row = document.createElement("tr");
@@ -212,20 +218,29 @@ function renderTableBody(worlds, tableBody, currentWorld) {
             flagImg.style.height = "15px";
             flagCell.appendChild(flagImg);
         } else {
-            // If missing, just leave blank
             flagCell.textContent = "";
         }
         row.appendChild(flagCell);
 
-        // 2) World cell with hyperlink
+        // 2) World cell
         const worldCell = document.createElement("td");
         worldCell.style.padding = "8px";
-        const link = document.createElement("a");
-        link.href = `https://2004.lostcity.rs/client?world=${world}&detail=high&method=0`;
-        link.textContent = (currentWorld === String(world))
-            ? `World ${world} (current)`
-            : `World ${world}`;
-        worldCell.appendChild(link);
+
+        if (currentWorld === String(world)) {
+            // If it's the current world, remove hyperlink and make text green
+            const worldText = document.createElement("span");
+            worldText.textContent = `World ${world} (current)`;
+            worldText.style.color = "green";
+            worldText.style.fontWeight = "bold";
+            worldCell.appendChild(worldText);
+        } else {
+            // Otherwise, show as a hyperlink
+            const link = document.createElement("a");
+            link.href = `https://2004.lostcity.rs/client?world=${world}&detail=high&method=0`;
+            link.textContent = `World ${world}`;
+            worldCell.appendChild(link);
+        }
+
         row.appendChild(worldCell);
 
         // 3) Players cell
@@ -238,7 +253,7 @@ function renderTableBody(worlds, tableBody, currentWorld) {
     });
 }
 
-/** 5) Add the plugin tab */
+
 async function addTab(name, content) {
     const tabsContainer = await waitForContainer();
     const tabsBar = tabsContainer.querySelector("div:first-child");
@@ -260,7 +275,6 @@ async function addTab(name, content) {
     tabsBar.appendChild(button);
 }
 
-/** 6) Export the plugin */
 export default function () {
     return {
         name: "World Selector",
