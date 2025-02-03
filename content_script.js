@@ -179,9 +179,12 @@ async function createVerticalTabsContainer() {
 
   // Create buttons for each plugin
   pluginManager.plugins.forEach((plugin, index) => {
+    if (plugin.hidden) return; // Skip hidden plugins
+
     const button = document.createElement("button");
     button.textContent = plugin.icon || "🔌";
     button.title = plugin.name;
+
     button.style.margin = "10px 0";
     button.style.background = "none";
     button.style.border = "none";

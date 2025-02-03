@@ -25,16 +25,19 @@ function createPersistentIRCFrame() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const ircButton = document.querySelector('button[title="IRC Chat"]');
-  if (ircButton) {
-      ircButton.style.display = "none";
-  }
+  setTimeout(() => {
+      const ircButton = document.querySelector('button[title="IRC Chat"]');
+      if (ircButton) {
+          ircButton.style.display = "none";
+      }
+  }, 500); // Delay to ensure button exists before attempting to hide
 });
 
 export default function () {
   return {
       name: "IRC Chat",
       icon: "💬",
+      hidden: true, // Prevents it from appearing in the plugin list
       async init() {
           console.log("IRC Chat Plugin Initialized.");
           createPersistentIRCFrame();
