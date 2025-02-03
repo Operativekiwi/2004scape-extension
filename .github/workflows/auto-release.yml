@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "content_script.js"
+      - "background.js"
       - "manifest.json"
       - "style.css"
       - "icons/**"
@@ -21,7 +22,7 @@ jobs:
     - name: Prepare Chrome extension
       run: |
         cp manifest.json manifest.chrome.json
-        zip -r chrome-extension.zip content_script.js manifest.json style.css icons/ plugins/
+        zip -r chrome-extension.zip content_script.js background.js manifest.json style.css icons/ plugins/
         ls -l
 
     - name: Prepare Firefox extension
@@ -29,7 +30,7 @@ jobs:
         # Update manifest for Firefox
         jq '.browser_specific_settings = {gecko: {id: "2004scape-tools@developer.mozilla.org", strict_min_version: "91.0"}}' manifest.json > manifest.firefox.json
         mv manifest.firefox.json manifest.json
-        zip -r firefox-extension.zip content_script.js manifest.json style.css icons/ plugins/
+        zip -r firefox-extension.zip content_script.js background.js manifest.json style.css icons/ plugins/
         ls -l
 
     - name: Create a release
