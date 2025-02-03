@@ -1,7 +1,7 @@
 export default function () {
     return {
-      name: "Market Plugin", // The name of your plugin
-      icon: "✨", // Optional icon to display in the UI
+      name: "Market Plugin", 
+      icon: "✨",
       createContent: () => {
         const content = document.createElement("div");
         content.innerHTML = "<h3>Welcome to Example Plugin!</h3>";
