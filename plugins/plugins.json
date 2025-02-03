@@ -4,7 +4,6 @@
       "itemLookup.js",
       "playerLookup.js",
       "skillCalculator.js",
-      "ircChat.js",
       "marketLookup.js"
     ]
   }
