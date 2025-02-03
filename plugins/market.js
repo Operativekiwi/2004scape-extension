@@ -1,6 +1,6 @@
 export default function () {
     return {
-      name: "Market Plugin", // testing webhook
+      name: "Market Plugin", // testing the webhook
       icon: "✨",
       createContent: () => {
         const content = document.createElement("div");
