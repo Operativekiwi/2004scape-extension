@@ -1,80 +1,50 @@
-let isIRCTabActive = false;
-
-function createIRCContent() {
-  const container = document.createElement("div");
-  container.id = "tab-irc-chat";
-
-  const title = document.createElement("h3");
-  title.textContent = "IRC Chat";
-  container.appendChild(title);
-
-
-  const placeholder = document.createElement("div");
-  placeholder.style.height = "450px";
-  container.appendChild(placeholder);
-
+function createPersistentIRCFrame() {
   if (!document.getElementById('persistent-irc-frame')) {
-    const fixedIframe = document.createElement("iframe");
-    fixedIframe.id = 'persistent-irc-frame';
-    fixedIframe.src = "https://web.libera.chat/#2004scape";
-    fixedIframe.style.position = "absolute";
-    fixedIframe.style.width = "180px";
-    fixedIframe.style.height = "450px";
-    fixedIframe.style.border = "1px solid #333";
-    fixedIframe.style.borderRadius = "4px";
-    fixedIframe.style.backgroundColor = "#1a1a1a";
-    fixedIframe.style.top = "70px";
-    fixedIframe.style.right = "20px";
-    fixedIframe.style.display = "none";
-    fixedIframe.style.zIndex = "10000";
-    const sidebar = document.getElementById("vertical-tabs-container");
-    if (sidebar) {
-        sidebar.appendChild(fixedIframe);
-    } else {
-        document.body.appendChild(fixedIframe);
-    }
-    
-  }
-
-  const iframe = document.getElementById('persistent-irc-frame');
-  if (iframe) {
-    isIRCTabActive = true;
-    iframe.style.display = "block";
-  }
-
-  return container;
-}
-
-function hideIRCFrame() {
-  const iframe = document.getElementById('persistent-irc-frame');
-  if (iframe && isIRCTabActive) {
-    iframe.style.display = "none";
-    isIRCTabActive = false;
+      const fixedIframe = document.createElement("iframe");
+      fixedIframe.id = 'persistent-irc-frame';
+      fixedIframe.src = "https://web.libera.chat/#2004scape?uio=mt,d4"; // Use Kiwi IRC URL params to hide elements
+      fixedIframe.style.position = "fixed";
+      fixedIframe.style.width = "60%";
+      fixedIframe.style.height = "150px"; // Reduced height to prevent collision
+      fixedIframe.style.bottom = "0px"; // Anchored fully to the bottom
+      fixedIframe.style.left = "20%";
+      fixedIframe.style.zIndex = "1000";
+      fixedIframe.style.border = "none";
+      fixedIframe.style.background = "transparent";
+      fixedIframe.style.overflow = "hidden";
+      fixedIframe.style.paddingTop = "10px"; // Added top padding to prevent collision
+      
+      // Find the game's iframe and insert IRC below it
+      const gameIframe = document.querySelector("iframe");
+      if (gameIframe && gameIframe.parentNode) {
+          gameIframe.parentNode.insertBefore(fixedIframe, gameIframe.nextSibling);
+      } else {
+          document.body.appendChild(fixedIframe);
+      }
   }
 }
 
-// Add event listener to hide iframe when switching tabs
-document.addEventListener('click', (e) => {
-  // Check if click is on a different tab button
-  if (e.target.closest('button') && !e.target.title?.includes('IRC Chat')) {
-    hideIRCFrame();
+document.addEventListener("DOMContentLoaded", () => {
+  const ircButton = document.querySelector('button[title="IRC Chat"]');
+  if (ircButton) {
+      ircButton.style.display = "none";
   }
 });
 
 export default function () {
   return {
-    name: "IRC Chat",
-    icon: "💬",
-    createContent: createIRCContent,
-    async init() {
-      console.log("IRC Chat Plugin Initialized.");
-    },
-    destroy() {
-      const iframe = document.getElementById('persistent-irc-frame');
-      if (iframe) {
-        iframe.remove();
+      name: "IRC Chat",
+      icon: "💬",
+      async init() {
+          console.log("IRC Chat Plugin Initialized.");
+          createPersistentIRCFrame();
+      },
+      destroy() {
+          const iframe = document.getElementById('persistent-irc-frame');
+          if (iframe) {
+              iframe.remove();
+          }
+          console.log("IRC Chat Plugin Destroyed.");
       }
-      console.log("IRC Chat Plugin Destroyed.");
-    }
   };
 }
