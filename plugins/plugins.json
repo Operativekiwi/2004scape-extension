@@ -5,7 +5,7 @@
       "playerLookup.js",
       "skillCalculator.js",
       "ircChat.js",
-      "market.js"
+      "marketLookup.js"
     ]
   }
   
