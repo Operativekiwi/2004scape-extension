@@ -1,3 +1,5 @@
+import { fetchPlayerSkills } from './playerLookup.js';
+
 async function fetchExperienceTable() {
     return {
         1: 0,
@@ -117,13 +119,23 @@ function createCalculatorContent() {
     const container = document.createElement("div");
     container.id = "tab-skill-calculator";
 
-    // Search input at top
+    // Create search container
+    const searchContainer = document.createElement("div");
+    searchContainer.style.marginBottom = "20px";
+
     const searchInput = document.createElement("input");
     searchInput.type = "text";
     searchInput.placeholder = "Enter player name...";
-    searchInput.style.width = "100%";
-    searchInput.style.marginBottom = "20px";
-    container.appendChild(searchInput);
+    searchInput.style.width = "calc(100% - 110px)";
+    searchInput.style.marginRight = "10px";
+
+    const searchButton = document.createElement("button");
+    searchButton.textContent = "Search";
+    searchButton.style.width = "100px";
+
+    searchContainer.appendChild(searchInput);
+    searchContainer.appendChild(searchButton);
+    container.appendChild(searchContainer);
 
     // Skills grid
     const skillGrid = document.createElement("div");
@@ -147,53 +159,115 @@ function createCalculatorContent() {
         
         const icon = document.createElement("img");
         icon.src = `https://oldschool.runescape.wiki/images/${skill}_icon.png`;
-        icon.onerror = () => {
-            icon.src = "https://oldschool.runescape.wiki/images/thumb/Quests.png/1024px-Quests.png";
-            console.log(`Failed to load icon for ${skill}`);
-        };
         icon.alt = skill;
         icon.style.width = "20px";
         icon.style.height = "20px";
+        icon.style.marginRight = "5px";
+        
+        const levelSpan = document.createElement("span");
+        levelSpan.textContent = "1";
+        levelSpan.style.color = "#fff";
+        levelSpan.dataset.skill = skill.toLowerCase();
         
         skillDiv.appendChild(icon);
+        skillDiv.appendChild(levelSpan);
         skillDiv.addEventListener("click", () => showCalculator(skill, container));
         skillGrid.appendChild(skillDiv);
     });
     
     container.appendChild(skillGrid);
 
-    // Calculator section (hidden initially)
+    // Calculator section
     const calculatorSection = document.createElement("div");
     calculatorSection.id = "calculator-section";
     container.appendChild(calculatorSection);
 
+    // Add search button functionality
+    searchButton.addEventListener("click", async () => {
+        const playerName = searchInput.value.trim();
+        if (!playerName) return;
+    
+        const playerSkills = await fetchPlayerSkills(playerName);
+        if (!playerSkills) {
+            alert("Player not found");
+            return;
+        }
+    
+        // Update skill levels and store exp in the grid
+        skills.forEach(skill => {
+            const skillData = playerSkills[skill.toLowerCase()];
+            if (skillData) {
+                const levelSpan = skillGrid.querySelector(`span[data-skill="${skill.toLowerCase()}"]`);
+                if (levelSpan) {
+                    levelSpan.textContent = skillData.level;
+                    levelSpan.dataset.exp = skillData.xp; // Store the exp value
+                }
+            }
+        });
+    
+        // If calculator is open, update its values
+        const calculatorSection = container.querySelector("#calculator-section");
+        const selectedSkill = calculatorSection.getAttribute("data-selected-skill");
+        if (selectedSkill) {
+            const skillData = playerSkills[selectedSkill.toLowerCase()];
+            if (skillData) {
+                const currentLevelInput = document.getElementById("current-level");
+                const targetLevelInput = document.getElementById("target-level");
+                const currentExpDiv = document.getElementById("current-exp");
+                
+                if (currentLevelInput) {
+                    currentLevelInput.value = skillData.level;
+                }
+                if (targetLevelInput) {
+                    targetLevelInput.value = Math.min(skillData.level + 1, 99);
+                }
+                if (currentExpDiv) {
+                    currentExpDiv.textContent = skillData.xp.toLocaleString();
+                }
+                
+                // Trigger change event to update calculations
+                currentLevelInput?.dispatchEvent(new Event('change'));
+            }
+        }
+    });
+    
     return container;
 }
 
 async function showCalculator(skill, container) {
     const calculatorSection = container.querySelector("#calculator-section");
     calculatorSection.innerHTML = "";
+    calculatorSection.setAttribute("data-selected-skill", skill);
 
-    // Level inputs in a dark theme style
+    // Level inputs
     const levelInputs = document.createElement("div");
     levelInputs.style.backgroundColor = "#161616";
     levelInputs.style.padding = "10px";
     levelInputs.style.marginBottom = "20px";
+
+    // Get current skill level and exp from the grid
+    const skillSpan = container.querySelector(`span[data-skill="${skill.toLowerCase()}"]`);
+    const currentLevel = parseInt(skillSpan?.textContent || "1");
+    const currentExp = parseFloat(skillSpan?.dataset.exp || "0");
+
     levelInputs.innerHTML = `
         <div style="margin-bottom: 10px; color: #fff;">
             <div>Current Level</div>
-            <input type="number" id="current-level" min="1" max="99" value="1" style="width: 60px; background: #262626; color: white; border: 1px solid #404040;">
+            <input type="number" id="current-level" min="1" max="99" value="${currentLevel}" 
+                   style="width: 60px; background: #262626; color: white; border: 1px solid #404040;">
             <div>Current Experience</div>
-            <div id="current-exp">0</div>
+            <div id="current-exp">${currentExp.toLocaleString()}</div>
         </div>
         <div style="color: #fff;">
             <div>Target Level</div>
-            <input type="number" id="target-level" min="1" max="99" value="1" style="width: 60px; background: #262626; color: white; border: 1px solid #404040;">
+            <input type="number" id="target-level" min="1" max="99" value="${Math.min(currentLevel + 1, 99)}" 
+                   style="width: 60px; background: #262626; color: white; border: 1px solid #404040;">
             <div>Target Experience</div>
             <div id="target-exp">0</div>
         </div>
     `;
     calculatorSection.appendChild(levelInputs);
+
 
     // Methods section
     const methods = await loadMethods();
