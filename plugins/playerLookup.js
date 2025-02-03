@@ -237,7 +237,6 @@ function createPlayerLookupContent() {
       const entriesContainer = document.createElement("div");
       entriesContainer.style.marginTop = "10px";
 
-      // Display up to 3 most recent entries
       logEntries.slice(0, 3).forEach(entry => {
         const entryDiv = document.createElement("div");
         entryDiv.style.marginBottom = "10px";
