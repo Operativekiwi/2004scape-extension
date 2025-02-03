@@ -3,7 +3,7 @@
   "name": "2004Scape Tools",
   "version": "1.0",
   "description": "Swiftkit-like plugins for 2004scape",
-  "permissions": ["scripting", "storage", "tabs", "activeTab", "background"],
+  "permissions": ["scripting", "storage", "tabs", "activeTab"],
   "host_permissions": [
     "https://2004.lostcity.rs/client*",
     "https://lostcity.markets/*"
