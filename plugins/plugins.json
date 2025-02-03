@@ -1,7 +1,6 @@
 {
     "plugins": [
       "worldSelector.js",
-      "itemLookup.js",
       "playerLookup.js",
       "skillCalculator.js",
       "marketLookup.js"

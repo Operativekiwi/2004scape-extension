@@ -28,6 +28,144 @@ function loadItemListings(slug, callback) {
   });
 }
 
+function createRecentListings() {
+  const recentListingsContainer = document.createElement('div');
+  recentListingsContainer.id = 'recent-listings';
+  recentListingsContainer.style.marginTop = '10px';
+  recentListingsContainer.style.padding = '10px';
+  recentListingsContainer.style.border = '1px solid #444';
+  recentListingsContainer.style.borderRadius = '6px';
+  recentListingsContainer.style.backgroundColor = '#1a1a1a';
+  recentListingsContainer.style.color = '#fff';
+  recentListingsContainer.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+  recentListingsContainer.style.width = '100%';
+  recentListingsContainer.style.maxHeight = '350px';
+  recentListingsContainer.style.overflowY = 'auto';
+
+  // Title bar (with refresh button)
+  const titleBar = document.createElement('div');
+  titleBar.style.display = 'flex';
+  titleBar.style.justifyContent = 'space-between';
+  titleBar.style.alignItems = 'center';
+  titleBar.style.marginBottom = '8px';
+
+  const recentTitle = document.createElement('h4');
+  recentTitle.textContent = 'Recent Listings';
+  recentTitle.style.fontSize = '14px';
+  recentTitle.style.fontWeight = 'bold';
+  recentTitle.style.margin = '0';
+
+  // Refresh button
+  const refreshButton = document.createElement('button');
+  refreshButton.innerHTML = '🔄';
+  refreshButton.title = 'Refresh Listings';
+  refreshButton.style.background = 'none';
+  refreshButton.style.border = 'none';
+  refreshButton.style.color = '#fff';
+  refreshButton.style.fontSize = '14px';
+  refreshButton.style.cursor = 'pointer';
+  refreshButton.style.padding = '2px 6px';
+  refreshButton.style.borderRadius = '4px';
+  refreshButton.style.transition = 'background 0.2s';
+  
+  refreshButton.addEventListener('mouseover', () => {
+      refreshButton.style.background = '#333';
+  });
+
+  refreshButton.addEventListener('mouseout', () => {
+      refreshButton.style.background = 'none';
+  });
+
+  refreshButton.addEventListener('click', () => {
+      loadRecentListings();
+  });
+
+  titleBar.appendChild(recentTitle);
+  titleBar.appendChild(refreshButton);
+  recentListingsContainer.appendChild(titleBar);
+
+  const listingsGrid = document.createElement('div');
+  listingsGrid.style.display = 'grid';
+  listingsGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(100%, 1fr))';
+  listingsGrid.style.gap = '5px';
+  listingsGrid.style.padding = '5px';
+  recentListingsContainer.appendChild(listingsGrid);
+
+  function loadRecentListings() {
+      listingsGrid.innerHTML = '<p style="text-align: center; color: #ccc;">Refreshing...</p>';
+
+      chrome.runtime.sendMessage({ action: "fetchRecentListings" }, (response) => {
+          console.log('Recent listings response:', response);
+
+          if (!response || !response.success) {
+              listingsGrid.innerHTML = '<p style="text-align: center; color: red;">Failed to load.</p>';
+              console.error('Failed to load recent listings:', response);
+              return;
+          }
+
+          if (!response.listings || response.listings.length === 0) {
+              listingsGrid.innerHTML = '<p style="text-align: center; color: #aaa;">No recent listings.</p>';
+              console.log('No listings found in response');
+              return;
+          }
+
+          listingsGrid.innerHTML = ''; // Clear loading message
+
+          response.listings.forEach(listing => {
+              console.log('Processing listing:', listing);
+              const listingCard = document.createElement('div');
+              listingCard.className = 'listing-card';
+              listingCard.style.border = '1px solid #333';
+              listingCard.style.padding = '6px';
+              listingCard.style.borderRadius = '4px';
+              listingCard.style.backgroundColor = '#222';
+              listingCard.style.color = '#ddd';
+              listingCard.style.cursor = 'pointer';
+              listingCard.style.transition = 'all 0.2s ease-in-out';
+              listingCard.style.display = 'flex';
+              listingCard.style.alignItems = 'center';
+              listingCard.style.justifyContent = 'space-between';
+              listingCard.style.width = '100%';
+
+              listingCard.addEventListener('mouseover', () => {
+                  listingCard.style.backgroundColor = '#333';
+                  listingCard.style.transform = 'scale(1.02)';
+              });
+              listingCard.addEventListener('mouseout', () => {
+                  listingCard.style.backgroundColor = '#222';
+                  listingCard.style.transform = 'scale(1)';
+              });
+
+              listingCard.innerHTML = `
+                  <div style="display: flex; align-items: center;">
+                      <img src="https://lostcity.markets/img/items/${listing.itemSlug}.png" 
+                          alt="${listing.itemSlug}" 
+                          style="width: 28px; height: 28px; border-radius: 4px; margin-right: 6px;">
+                      <div>
+                          <span style="color: ${listing.type === 'Sell' ? 'lightgreen' : 'tomato'}; font-weight: bold;">
+                              ${listing.type} - ${listing.details}
+                          </span>
+                          <div style="color: #bbb; font-size: 11px;">
+                              ${listing.username} • ${listing.time}
+                          </div>
+                      </div>
+                  </div>
+              `;
+
+              listingCard.addEventListener('click', () => {
+                  window.open(`https://lostcity.markets/items/${listing.itemSlug}`, '_blank');
+              });
+
+              listingsGrid.appendChild(listingCard);
+          });
+      });
+  }
+
+  // Load listings when the function is called
+  loadRecentListings();
+
+  return recentListingsContainer;
+}
 
 function createMarketLookupContent() {
   const container = document.createElement("div");
@@ -185,6 +323,12 @@ function createMarketLookupContent() {
         });
       }, 300); // Adjust delay (300ms) for better responsiveness
   });
+
+  container.appendChild(resultsContainer);
+    
+  // Add recent listings below the search results
+  const recentListings = createRecentListings();
+  container.appendChild(recentListings);
 
   return container;
 }
