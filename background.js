@@ -1,35 +1,50 @@
-async function fetchRecentListings(url = 'https://lostcity.markets/') {
+async function fetchRecentListings() {
+    const urls = [
+        'https://lostcity.markets/?type=buy',
+        'https://lostcity.markets/?type=sell'
+    ];
+
     try {
-        const response = await fetch(url);
-        const text = await response.text();
+        const responses = await Promise.all(urls.map(url => fetch(url).then(res => res.text())));
 
-        // Extract the JSON data from the <div id="app" data-page="{...}">
-        const jsonMatch = text.match(/<div id="app" data-page="([^"]+)">/);
-        if (!jsonMatch) {
-            console.error("Failed to find JSON data in page.");
-            return [];
-        }
+        let allListings = [];
 
-        // Parse JSON safely
-        const jsonData = JSON.parse(jsonMatch[1].replace(/&quot;/g, '"'));
+        responses.forEach((text, index) => {
+            const jsonMatch = text.match(/<div id="app" data-page="([^"]+)">/);
+            if (!jsonMatch) {
+                console.error(`Failed to find JSON data in ${urls[index]}`);
+                return;
+            }
 
-        if (!jsonData || !jsonData.props || !jsonData.props.listings || !jsonData.props.listings.data) {
-            console.error("No listings found in parsed data.");
-            return [];
-        }
+            const jsonData = JSON.parse(jsonMatch[1].replace(/&quot;/g, '"'));
 
-        // Extract and format listings
-        const listings = jsonData.props.listings.data.map((listing) => ({
-            itemSlug: listing.item.slug,
-            type: listing.type === "buy" ? "Buy" : "Sell",
-            details: `${listing.quantity} for ${listing.price} GP ea.`,
-            username: listing.username || "Unknown",
-            time: new Date(listing.updatedAt).toLocaleString(),
-            notes: listing.notes || "None",
-        }));
+            if (!jsonData?.props?.listings?.data) {
+                console.error(`No listings found in parsed data from ${urls[index]}`);
+                return;
+            }
 
-        console.log("Fetched recent listings:", listings); // Debugging
-        return listings;
+            const listings = jsonData.props.listings.data.map((listing) => ({
+                itemSlug: listing.item.slug,
+                type: listing.type === "buy" ? "Buy" : "Sell",
+                details: `${listing.quantity} for ${listing.price} GP ea.`,
+                username: listing.username || "Unknown",
+                time: new Date(listing.updatedAt),
+                notes: listing.notes || "None",
+            }));
+
+            allListings = allListings.concat(listings);
+        });
+
+        // Sort by most recent time
+        allListings.sort((a, b) => b.time - a.time);
+
+        // Convert time back to a string format
+        allListings.forEach(listing => {
+            listing.time = listing.time.toLocaleString();
+        });
+
+        console.log("Fetched recent listings:", allListings);
+        return allListings;
     } catch (error) {
         console.error("Error fetching recent listings:", error);
         return [];
@@ -80,7 +95,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 sendResponse({ success: false, listings: [] });
             });
 
-        return true; // Keeps sendResponse open
+        return true; //
     } else if (request.action === "fetchRecentListings") {
         fetchRecentListings()
             .then(listings => {
@@ -91,6 +106,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 sendResponse({ success: false, listings: [] });
             });
         return true;
+
     }
 });
 

@@ -31,31 +31,54 @@ function loadItemListings(slug, callback) {
 function createRecentListings() {
   const recentListingsContainer = document.createElement('div');
   recentListingsContainer.id = 'recent-listings';
-  recentListingsContainer.style.marginTop = '10px';
-  recentListingsContainer.style.padding = '10px';
-  recentListingsContainer.style.border = '1px solid #444';
-  recentListingsContainer.style.borderRadius = '6px';
-  recentListingsContainer.style.backgroundColor = '#1a1a1a';
-  recentListingsContainer.style.color = '#fff';
-  recentListingsContainer.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
   recentListingsContainer.style.width = '100%';
-  recentListingsContainer.style.maxHeight = '350px';
-  recentListingsContainer.style.overflowY = 'auto';
+  recentListingsContainer.style.flex = '1'; // Takes full height when possible
+  recentListingsContainer.style.overflowY = 'auto'; // Enables scrolling
 
-  // Title bar (with refresh button)
-  const titleBar = document.createElement('div');
-  titleBar.style.display = 'flex';
-  titleBar.style.justifyContent = 'space-between';
-  titleBar.style.alignItems = 'center';
-  titleBar.style.marginBottom = '8px';
+  // Title Section
+  const title = document.createElement('h3');
+  title.textContent = 'Recent Listings';
+  title.style.fontSize = '16px';
+  title.style.fontWeight = 'bold';
+  title.style.marginBottom = '5px';
 
-  const recentTitle = document.createElement('h4');
-  recentTitle.textContent = 'Recent Listings';
-  recentTitle.style.fontSize = '14px';
-  recentTitle.style.fontWeight = 'bold';
-  recentTitle.style.margin = '0';
+  recentListingsContainer.appendChild(title);
 
-  // Refresh button
+  // Controls (Filters + Refresh)
+  const controlsContainer = document.createElement('div');
+  controlsContainer.style.display = 'flex';
+  controlsContainer.style.alignItems = 'center';
+  controlsContainer.style.justifyContent = 'space-between';
+  controlsContainer.style.marginBottom = '5px';
+
+  // Filter: Buy & Sell Checkboxes
+  const filterContainer = document.createElement('div');
+
+  const buyCheckbox = document.createElement('input');
+  buyCheckbox.type = 'checkbox';
+  buyCheckbox.checked = true;
+  buyCheckbox.style.marginRight = '3px';
+  
+  const buyLabel = document.createElement('label');
+  buyLabel.textContent = 'Buy';
+  buyLabel.style.fontSize = '12px';
+
+  const sellCheckbox = document.createElement('input');
+  sellCheckbox.type = 'checkbox';
+  sellCheckbox.checked = true;
+  sellCheckbox.style.marginRight = '3px';
+  sellCheckbox.style.marginLeft = '10px';
+
+  const sellLabel = document.createElement('label');
+  sellLabel.textContent = 'Sell';
+  sellLabel.style.fontSize = '12px';
+
+  filterContainer.appendChild(buyCheckbox);
+  filterContainer.appendChild(buyLabel);
+  filterContainer.appendChild(sellCheckbox);
+  filterContainer.appendChild(sellLabel);
+
+  // Refresh Button
   const refreshButton = document.createElement('button');
   refreshButton.innerHTML = '🔄';
   refreshButton.title = 'Refresh Listings';
@@ -67,7 +90,7 @@ function createRecentListings() {
   refreshButton.style.padding = '2px 6px';
   refreshButton.style.borderRadius = '4px';
   refreshButton.style.transition = 'background 0.2s';
-  
+
   refreshButton.addEventListener('mouseover', () => {
       refreshButton.style.background = '#333';
   });
@@ -80,15 +103,16 @@ function createRecentListings() {
       loadRecentListings();
   });
 
-  titleBar.appendChild(recentTitle);
-  titleBar.appendChild(refreshButton);
-  recentListingsContainer.appendChild(titleBar);
+  controlsContainer.appendChild(filterContainer);
+  controlsContainer.appendChild(refreshButton);
+  recentListingsContainer.appendChild(controlsContainer);
 
   const listingsGrid = document.createElement('div');
   listingsGrid.style.display = 'grid';
   listingsGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(100%, 1fr))';
   listingsGrid.style.gap = '5px';
   listingsGrid.style.padding = '5px';
+  listingsGrid.style.overflowY = 'auto';
   recentListingsContainer.appendChild(listingsGrid);
 
   function loadRecentListings() {
@@ -112,35 +136,25 @@ function createRecentListings() {
           listingsGrid.innerHTML = ''; // Clear loading message
 
           response.listings.forEach(listing => {
+              if ((!buyCheckbox.checked && listing.type === 'Buy') || (!sellCheckbox.checked && listing.type === 'Sell')) {
+                  return; // Skip listings based on filter selection
+              }
+
               console.log('Processing listing:', listing);
               const listingCard = document.createElement('div');
               listingCard.className = 'listing-card';
-              listingCard.style.border = '1px solid #333';
+              listingCard.style.borderBottom = '1px solid #333';
               listingCard.style.padding = '6px';
-              listingCard.style.borderRadius = '4px';
-              listingCard.style.backgroundColor = '#222';
-              listingCard.style.color = '#ddd';
-              listingCard.style.cursor = 'pointer';
-              listingCard.style.transition = 'all 0.2s ease-in-out';
               listingCard.style.display = 'flex';
               listingCard.style.alignItems = 'center';
               listingCard.style.justifyContent = 'space-between';
               listingCard.style.width = '100%';
 
-              listingCard.addEventListener('mouseover', () => {
-                  listingCard.style.backgroundColor = '#333';
-                  listingCard.style.transform = 'scale(1.02)';
-              });
-              listingCard.addEventListener('mouseout', () => {
-                  listingCard.style.backgroundColor = '#222';
-                  listingCard.style.transform = 'scale(1)';
-              });
-
               listingCard.innerHTML = `
                   <div style="display: flex; align-items: center;">
                       <img src="https://lostcity.markets/img/items/${listing.itemSlug}.png" 
                           alt="${listing.itemSlug}" 
-                          style="width: 28px; height: 28px; border-radius: 4px; margin-right: 6px;">
+                          style="width: 24px; height: 24px; border-radius: 4px; margin-right: 6px;">
                       <div>
                           <span style="color: ${listing.type === 'Sell' ? 'lightgreen' : 'tomato'}; font-weight: bold;">
                               ${listing.type} - ${listing.details}
@@ -164,8 +178,13 @@ function createRecentListings() {
   // Load listings when the function is called
   loadRecentListings();
 
+  // Add event listeners for filters
+  buyCheckbox.addEventListener('change', loadRecentListings);
+  sellCheckbox.addEventListener('change', loadRecentListings);
+
   return recentListingsContainer;
 }
+
 
 function createMarketLookupContent() {
   const container = document.createElement("div");
