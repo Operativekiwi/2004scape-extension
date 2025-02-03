@@ -8,7 +8,7 @@ function createIRCContent() {
   title.textContent = "IRC Chat";
   container.appendChild(title);
 
-  // Create a placeholder div to maintain space
+
   const placeholder = document.createElement("div");
   placeholder.style.height = "450px";
   container.appendChild(placeholder);

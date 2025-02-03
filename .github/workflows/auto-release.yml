@@ -64,3 +64,16 @@ jobs:
         asset_content_type: "application/zip"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # ✅ NEW STEP: Send Discord Notification
+    - name: Send Discord Notification
+      run: |
+        curl -H "Content-Type: application/json" -X POST -d '{
+          "content": "📢 **New Auto Release Created!**",
+          "embeds": [{
+            "title": "Release: Auto Release v${{ github.run_number }}",
+            "description": "New release created from latest commits.",
+            "url": "${{ steps.create_release.outputs.html_url }}",
+            "color": 5814783
+          }]
+        }' ${{ secrets.DISCORD_WEBHOOK_URL }}
