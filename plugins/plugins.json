@@ -3,7 +3,8 @@
       "worldSelector.js",
       "playerLookup.js",
       "skillCalculator.js",
-      "marketLookup.js"
+      "marketLookup.js",
+      "notes.js"
     ]
   }
   
