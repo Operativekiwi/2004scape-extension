@@ -75,6 +75,30 @@
             "icon": "icons/smithing_iron_bar.png",
             "exp": 12.5,
             "level": 15
+        },
+        {
+            "name": "Smelt Steel Bar",
+            "icon": "icons/smithing_iron_bar.png",
+            "exp": 17.5,
+            "level": 30
+        },
+        {
+            "name": "Smith Bronze Bar",
+            "icon": "icons/smithing_bronze_bar.png",
+            "exp": 12.5,
+            "level": 1
+        },
+        {
+            "name": "Smith Iron Bar",
+            "icon": "icons/smithing_iron_bar.png",
+            "exp": 25,
+            "level": 15
+        },
+        {
+            "name": "Smith Steel Bar",
+            "icon": "icons/smithing_iron_bar.png",
+            "exp": 37.5,
+            "level": 30
         }
     ],
     "Fishing": [
