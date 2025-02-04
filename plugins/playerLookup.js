@@ -199,23 +199,30 @@ function createPlayerLookupContent() {
       const skillDiv = document.createElement("div");
       skillDiv.style.display = "flex";
       skillDiv.style.alignItems = "center";
-
+    
       const icon = document.createElement("img");
       icon.src = `https://oldschool.runescape.wiki/images/${skill}_icon.png`;
       icon.alt = skill;
       icon.style.width = "20px";
       icon.style.height = "20px";
       icon.style.marginRight = "5px";
-
+    
       const label = document.createElement("span");
-      label.textContent = playerSkills[skill.toLowerCase()]?.level || "1";
+      const skillData = playerSkills[skill.toLowerCase()];
+      label.textContent = skillData?.level || "1";
       label.style.color = "yellow";
-
+      
+      // Add tooltip with XP
+      if (skillData?.xp) {
+        const xp = Math.floor(skillData.xp); // Round down decimal places
+        skillDiv.title = `XP: ${xp.toLocaleString()}`;
+      }
+    
       skillDiv.appendChild(icon);
       skillDiv.appendChild(label);
       skillGrid.appendChild(skillDiv);
     });
-
+    
     resultContainer.appendChild(skillGrid);
 
     const logLink = document.createElement("a");

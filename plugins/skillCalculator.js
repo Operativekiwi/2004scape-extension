@@ -239,16 +239,15 @@ async function showCalculator(skill, container) {
     calculatorSection.innerHTML = "";
     calculatorSection.setAttribute("data-selected-skill", skill);
 
-    // Level inputs
+    // Get current skill level and exp from the grid
+    const skillSpan = container.querySelector(`span[data-skill="${skill.toLowerCase()}"]`);
+    const currentLevel = parseInt(skillSpan?.textContent || "1");
+    const currentExp = Math.floor(parseFloat(skillSpan?.dataset.exp || "0")); // Round down decimal places
+
     const levelInputs = document.createElement("div");
     levelInputs.style.backgroundColor = "#161616";
     levelInputs.style.padding = "10px";
     levelInputs.style.marginBottom = "20px";
-
-    // Get current skill level and exp from the grid
-    const skillSpan = container.querySelector(`span[data-skill="${skill.toLowerCase()}"]`);
-    const currentLevel = parseInt(skillSpan?.textContent || "1");
-    const currentExp = parseFloat(skillSpan?.dataset.exp || "0");
 
     levelInputs.innerHTML = `
         <div style="margin-bottom: 10px; color: #fff;">
@@ -326,18 +325,20 @@ async function showCalculator(skill, container) {
                 methodDiv.style.backgroundColor = "#400000";
                 return;
             }
-
+        
+            const skillSpan = document.querySelector(`span[data-skill="${calculatorSection.getAttribute("data-selected-skill").toLowerCase()}"]`);
+            const currentExp = Math.floor(parseFloat(skillSpan?.dataset.exp || "0"));
+        
             const expTable = await fetchExperienceTable();
-            const currentExp = expTable[currentLevel];
-            const targetExp = expTable[targetLevel];
-            const expNeeded = targetExp - currentExp;
+            const expNeeded = expTable[targetLevel] - currentExp;
             const actionsNeeded = Math.ceil(expNeeded / method.exp);
-
+        
             actionsSpan.textContent = ` - ${actionsNeeded.toLocaleString()} actions`;
+            // Update with actual current exp
             document.getElementById("current-exp").textContent = currentExp.toLocaleString();
-            document.getElementById("target-exp").textContent = targetExp.toLocaleString();
+            document.getElementById("target-exp").textContent = expTable[targetLevel].toLocaleString();
         });
-
+                
         methodInfo.appendChild(actionsSpan);
         methodsContainer.appendChild(methodDiv);
     });
@@ -352,10 +353,15 @@ async function showCalculator(skill, container) {
         const expTable = await fetchExperienceTable();
         const currentLevel = parseInt(document.getElementById("current-level").value);
         const targetLevel = parseInt(document.getElementById("target-level").value);
+    
+        const skillSpan = document.querySelector(`span[data-skill="${calculatorSection.getAttribute("data-selected-skill").toLowerCase()}"]`);
+        const currentExp = Math.floor(parseFloat(skillSpan?.dataset.exp || "0"));    
         
-        document.getElementById("current-exp").textContent = expTable[currentLevel].toLocaleString();
+        document.getElementById("current-exp").textContent = currentExp.toLocaleString();
         document.getElementById("target-exp").textContent = expTable[targetLevel].toLocaleString();
     }
+    
+    
 
     // Initial experience update
     updateExperience();
