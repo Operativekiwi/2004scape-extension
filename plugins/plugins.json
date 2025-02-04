@@ -4,6 +4,7 @@
       "playerLookup.js",
       "skillCalculator.js",
       "marketLookup.js",
+      "questHelper.js",
       "notes.js"
     ]
   }

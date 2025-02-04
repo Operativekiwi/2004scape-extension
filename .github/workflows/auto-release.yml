@@ -75,6 +75,13 @@ jobs:
             "title": "Release: Auto Release v${{ github.run_number }}",
             "description": "New release created from latest commits.",
             "url": "${{ steps.create_release.outputs.html_url }}",
-            "color": 5814783
+            "color": 5814783,
+            "fields": [
+              {
+                "name": "Commit Message",
+                "value": "${{ github.event.head_commit.message }}",
+                "inline": false
+              }
+            ]
           }]
         }' ${{ secrets.DISCORD_WEBHOOK_URL }}

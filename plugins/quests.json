@@ -1,0 +1,527 @@
+{
+    "black_knights_fortress": {
+        "name": "Black Knights' Fortress",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Cabbage (from Edgeville Monastery or Lumbridge cellar)",
+                "Iron chainbody",
+                "Bronze med helm"
+            ],
+            "quests": [],
+            "other": [
+                "12 Quest Points (required to start)",
+                "The ability to evade level 33 Black Knights"
+            ]
+        },
+        "steps": [
+            "Talk to Sir Amik Varze on the 3rd floor of the western section of the White Knights' Castle in Falador.",
+            "Head to Black Knights' Fortress with an iron chainbody and bronze med helm.",
+            "Equip iron chainbody and bronze med helm, and enter the fortress through the sturdy door.",
+            "Push the wall in front of you and climb-up the ladder twice.",
+            "Climb-down the ladder to the south, go through the eastern door and climb-up the ladder.",
+            "Climb-down the eastern ladder, go south through the door and climb-down the ladder.",
+            "Listen-at grill on the eastern wall.",
+            "After going through the conversation, go back to the entrance using the same route.",
+            "Go through the eastern door into the dining area, talk to the guard (can kill Black Knights or rush through dialogue).",
+            "Run north and climb-up the ladder, run east and then south, and push the wall.",
+            "Use cabbage on the hole (BE CAREFUL NOT TO EAT IT).",
+            "After your character mentions that you should return to Falador, do so and talk to Sir Amik Varze.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "cooks_assistant": {
+        "name": "Cook's Assistant",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Pot",
+                "Bucket"
+            ],
+            "quests": [],
+            "other": []
+        },
+        "steps": [
+            "Obtain the following items: a bucket of milk, a pot of flour, and an egg.",
+            "Buy them from Other players or create them yourself:",
+            "Bucket of milk: use a bucket (found in the cellar of Lumbridge Castle) on a dairy cow in the Lumbridge cow field.",
+            "Egg: spawns at the chicken farm north-west of the cow field.",
+            "Pot of flour: with an empty pot (found by the Cook in Lumbridge Castle), head to Mill Lane Mill next to the cow pens and pick some grain from outside.",
+            "Climb up to the top floor of the mill and use the grain with the hopper, then pull the lever.",
+            "Climb down and take the flour from the flour bin with an empty pot.",
+            "Talk to the Cook in Lumbridge Castle's kitchen with all the items in your inventory.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "demon_slayer": {
+        "name": "Demon Slayer",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Bucket of water (can be obtained during the quest)",
+                "25 un-noted bones (can be delivered in increments)",
+                "1 coin"
+            ],
+            "quests": [],
+            "other": [
+                "The ability to defeat a level 27 demon aided by three level 20 Dark wizards and two level 7 Dark wizards using the Silverlight in melee."
+            ]
+        },
+        "steps": [
+            "Speak with Aris in her tent in Varrock Square and give her 1 gp.",
+            "Remember the incantation Wally chants in the cutscene as it varies from player to player. If forgotten, speak to Aris again.",
+            "Speak to Sir Prysin on the 1st floor at the south-west corner of Varrock palace.",
+            "First key: Go to north-west corner of the palace and go up two flights of stairs.",
+            "Speak to Captain Rovin in the north-west tower on the 3rd floor about the demon.",
+            "Second key: Go to the kitchen to the north-east, on the 1st floor.",
+            "Use a bucket of water on the drain outside of the eastern kitchen wall.",
+            "If you don't have a bucket, head up the staircase in the kitchen and grab one from the room to the east. Fill it from the sink.",
+            "Climb down the manhole east of the palace, just outside the wall near the tree patch.",
+            "Take the west path down to the end and take the rusty Silverlight key from the floor.",
+            "Third key: Take 25 un-noted bones from your bank (Ultimate Ironmen can deliver the bones a few at a time).",
+            "Go to Wizards' Tower (south of Draynor Village, fairy ring code DIS).",
+            "Climb up the stairs and talk to Wizard Traiborn.",
+            "Give him 25 bones and he will give you his key.",
+            "Return to Sir Prysin (south-west room of Varrock Castle) and give him the keys.",
+            "Wield Silverlight and go to the Dark wizards by Varrock's south entrance. A cutscene will occur.",
+            "Defeat Delrith and right-click Delrith to banish him using the incantation remembered earlier.",
+            "If forgotten, ask Aris for the incantation.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "dorics_quest": {
+        "name": "Doric's Quest",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "6 clay (not soft clay)",
+                "4 copper ores",
+                "2 iron ores"
+            ],
+            "quests": [],
+            "other": []
+        },
+        "steps": [
+            "Obtain 2 iron ores, 4 copper ores, and 6 clay un-noted from either of the following methods:",
+            "Buy from the other Players, or",
+            "Head to the Dwarven Mine on the south side of Ice Mountain (east of the quest start) with a pickaxe.",
+            "Doric will give you a bronze pickaxe at the start of the quest if needed.",
+            "Mine 2 iron ores and 4 copper ores at a spot just south-east of the ladder down into the mine.",
+            "Mine 6 clay south of the iron and copper, near the Agility shortcut.",
+            "Players with low combat levels should be cautious of aggressive Scorpions and King Scorpions.",
+            "Bring food if needed.",
+            "Talk to Doric with the un-noted items in your inventory.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "dragon_slayer": {
+        "name": "Dragon Slayer",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Unfired bowl",
+                "Wizard's mind bomb",
+                "Lobster pot",
+                "Silk",
+                "Magic/ranged weapon with law and air rune for Telekinetic Grab (or 10,000 coins)",
+                "Hammer",
+                "Anti-dragon shield (Can be obtained during the quest)",
+                "90 steel nails",
+                "3 planks (only normal planks)",
+                "2,000 coins"
+            ],
+            "quests": [],
+            "other": [
+                "32 Quest Points to enter the Champions' Guild (required to start)",
+                "The ability to defeat a level 83 dragon"
+            ]
+        },
+        "steps": [
+            "Talk to the Guildmaster in the Champions' Guild.",
+            "Talk to Oziach in Edgeville.",
+            "Talk to the Guildmaster again to get the maze key and information about the map pieces.",
+            "If you don't already have an anti-dragon shield, speak to Duke Horacio.",
+            "Obtain the three map pieces:",
+            "Talk to the Oracle on Ice Mountain and enter the Dwarven Mine.",
+            "Use silk, lobster pot, unfired bowl, and Wizard's mind bomb on the magic door.",
+            "Open and search the chest to receive a map piece.",
+            "Take the Maze key from the Guildmaster and go to Rimmington.",
+            "Enter Melzar's Maze, defeat the required enemies, and retrieve the map piece.",
+            "Go to the jail in Port Sarim, kill Wormbrain and telegrab the map piece or pay him 10,000 coins.",
+            "Combine the three map pieces by using them on each other.",
+            "Gather 3 planks, 90 steel nails, a hammer, and 2,000 coins.",
+            "Talk to Klarense in Port Sarim and pay him 2,000 coins.",
+            "Go on board, climb down the ladder, and repair the hole 3 times.",
+            "Talk to Ned in Draynor Village with the map in your inventory.",
+            "Prepare for the fight with an anti-dragon shield, weapon, armor, food, and potions.",
+            "Return to the repaired boat in Port Sarim and talk to Captain Ned.",
+            "Climb on top of the volcano and enter the hole.",
+            "Head south and kill Elvarg.",
+            "After defeating Elvarg, you will automatically collect her head.",
+            "Talk to Oziach in Edgeville.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "ernest_the_chicken": {
+        "name": "Ernest the Chicken",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Spade (can be obtained during the quest)",
+                "Fish food (can be obtained during the quest)",
+                "Poison (can be obtained during the quest)"
+            ],
+            "quests": [],
+            "other": [
+                "The ability to defend from a level 22 Skeleton"
+            ]
+        },
+        "steps": [
+            "Talk to Veronica at the gate south of Draynor Manor.",
+            "Enter the manor.",
+            "Pick up poison from the room south of the kitchen on the west side of the 1st floor.",
+            "Pick up the fish food on the 2nd floor in the room south of the stairs containing the ghost.",
+            "Use the fish food on the poison to make poisoned fish food.",
+            "Search the bookcase on the western 1st floor.",
+            "Climb down the ladder and complete the lever puzzle:",
+            "Pull levers B then A down.",
+            "Enter door 1.",
+            "Pull lever D down.",
+            "Enter door 1.",
+            "Pull levers B, then A up.",
+            "Enter doors 3, 4, and 5.",
+            "Pull levers E, then F down.",
+            "Enter doors 6 and 7.",
+            "Pull lever C down.",
+            "Enter doors 7 and 6.",
+            "Pull lever E up.",
+            "Enter doors 6, 8, and 3.",
+            "Go through door 9 and grab the oil can.",
+            "Go up the ladder and pull the lever.",
+            "Pick up the spade in the far eastern room on the 1st floor.",
+            "Exit out the back door in the same room.",
+            "Go north around the back of the manor to the west to the compost heap.",
+            "Search the compost heap to get a key.",
+            "Go south and use the poisoned fish food on the fountain in the south-west corner of the grounds.",
+            "Search the poisoned fountain to retrieve a pressure gauge.",
+            "Return to the manor and pick up the rubber tube in the room north of the stairs on the 1st floor containing an aggressive skeleton.",
+            "Climb up the stairs, then climb up the spiral staircase to the west.",
+            "Talk to Professor Oddenstein.",
+            "Talk to him again to give him the items.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "the_knights_sword": {
+        "name": "The Knight's Sword",
+        "requirements": {
+            "skills": [
+                {
+                    "skill": "Mining",
+                    "level": 10
+                }
+            ],
+            "items": [
+                "Redberry pie (not half a redberry pie)",
+                "2 iron bars (4 if you want your own blurite sword)",
+                "Blurite ore (2 if you want your own blurite sword; obtained during the quest)",
+                "Any pickaxe (one spawns in south Falador)"
+            ],
+            "quests": [],
+            "other": [
+                "The ability to run from level 57 ice warriors and level 53 ice giants could help."
+            ]
+        },
+        "steps": [
+            "Talk to the Squire in the White Knights' Castle.",
+            "Talk to Reldo in the library of Varrock Palace. Skip this step if you already met Thurgo during The Giant Dwarf.",
+            "Talk to Thurgo south of Port Sarim (by the anvil, north of the fairy ring AIQ) and give him a redberry pie.",
+            "Talk to him again.",
+            "Go back and talk to the Squire.",
+            "Climb up the ladder on the eastern side of the castle to the 2nd floor. Go west and climb up the staircase.",
+            "Search the cupboard in Sir Vyvin's bedroom for a portrait while he is not looking.",
+            "Proceed back to Thurgo and give him the portrait. Bring iron bars with you.",
+            "Go to the Asgarnian Ice Dungeon using the trapdoor to the east of Thurgo.",
+            "Once inside, follow the path west, north, and then east. Keep along the southern wall in the icy area and mine a blurite ore.",
+            "Mine another if planning on doing the Falador Easy Diary.",
+            "Talk to Thurgo with your iron bars and blurite ore.",
+            "Bring the sword to the Squire.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "imp_catcher": {
+        "name": "Imp Catcher",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Black bead",
+                "Yellow bead",
+                "Red bead",
+                "White bead"
+            ],
+            "quests": [],
+            "other": []
+        },
+        "steps": [
+            "Obtain the black, red, white, and yellow beads:",
+            "Buy them other players or kill imps.",
+            "Recommended locations for free players: near the southern entrance to Falador or the top of the Karamja volcano.",
+            "Recommended locations for members: east of the Ardougne Monastery, at the entrance of Chasm of Fire, or around the Charcoal furnace.",
+            "Talk to Wizard Mizgog on the top floor of the Wizards' Tower with all four beads in your inventory.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "pirates_treasure": {
+        "name": "Pirate's Treasure",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Karamjan rum (obtainable during the quest for 30 coins)",
+                "White apron (obtainable during the quest in Port Sarim at Gerrant's Fishy Business)",
+                "60 coins (only 30 is needed if using a Ring of charos(a))",
+                "10 bananas (obtainable during the quest)",
+                "Spade (obtainable during the quest)"
+            ],
+            "quests": [],
+            "other": [
+                "Able to defeat or run away from a level 4 gardener"
+            ]
+        },
+        "steps": [
+            "Talk to Redbeard Frank by the pub at the northernmost Port Sarim dock.",
+            "Travel to Karamja for 30 coins by talking to Seaman Lorris at the south-west docks.",
+            "Head west to the Karamja Wines, Spirits, and Beers bar and buy one Karamjan rum for 30 coins. (Do not try to leave the island with the rum.)",
+            "Grab 10 bananas from the nearby trees.",
+            "Talk to Luthas the banana farmer about the customs workers, then talk to him again to ask for a job.",
+            "Place your rum in the crate outside, then right-click Fill to add the 10 bananas.",
+            "Talk to Luthas and get your payment from him.",
+            "Take the boat back to Port Sarim.",
+            "Take a white apron from the fishing store Gerrant's Fishy Business.",
+            "Talk to Wydin in the food store south of Gerrant's and get a job while wearing your white apron.",
+            "Search the crate with the banana on it to get the rum.",
+            "Give the rum to Redbeard Frank, he will give you a key.",
+            "Go upstairs in the Blue Moon Inn in Varrock and use your key on the chest in the room directly west.",
+            "Read the pirate message.",
+            "Head to Falador Park.",
+            "If you don't have a spade, get one from the Estate agent's house on the south-west side of the park.",
+            "Dig in Falador park and kill the Gardener (or run away to despawn him).",
+            "Dig again to get a casket.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "prince_ali_rescue": {
+        "name": "Prince Ali Rescue",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Soft clay",
+                "3 balls of wool",
+                "Yellow dye or 2 onions and 5 coins",
+                "Redberries",
+                "Ashes",
+                "Bucket of water or jug of water (obtainable during quest)",
+                "Pot of flour",
+                "Bronze bar",
+                "Pink skirt",
+                "3 beers",
+                "Rope (can be bought during the quest at Ned for 18 coins or 4 balls of wool)",
+                "At least 100 coins"
+            ],
+            "quests": [],
+            "other": [
+                "The ability to get past aggressive level 26 jail guards."
+            ]
+        },
+        "steps": [
+            "Talk to Chancellor Hassan in the southern room on the 1st floor of Al Kharid palace.",
+            "Grab the jug of water off the table in the eastern room if you did not bring your own.",
+            "Talk to Osman just north of the palace.",
+            "Go to Ned's house in Draynor Village with 3 balls of wool and obtain the wig from him.",
+            "Buy a rope from Ned for 15 coins (through dialogue) or 18 coins (from his shop) if you do not have one.",
+            "Go to Aggie's house in Draynor Village.",
+            "If needed, use the 2 onions on Aggie to get yellow dye.",
+            "Talk to Aggie to get the skin paste using ashes, pot of flour, bucket of water, and redberries.",
+            "Use the yellow dye on the wig.",
+            "Go to Thessalia's Fine Clothes in Varrock and buy a pink skirt for 2 coins if you do not have one.",
+            "Go to the jailhouse east of Draynor Village.",
+            "Talk to Lady Keli to get the key print.",
+            "Return to Osman outside Al Kharid palace and give him the soft clay with the key print and a bronze bar.",
+            "Go back to Draynor Village and find Leela south of the wheat fields to get the duplicate key and ask her how to deal with the guard.",
+            "Go to the jailhouse.",
+            "Talk to Joe and offer him the 3 drinks.",
+            "Use the rope on Lady Keli.",
+            "Open the prison door with the key.",
+            "Talk to Prince Ali. He will take the wig, skin paste, and pink skirt.",
+            "Report back to Chancellor Hassan.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "the_restless_ghost": {
+        "name": "The Restless Ghost",
+        "requirements": {
+            "skills": [],
+            "items": [],
+            "quests": [],
+            "other": [
+                "Capable of killing or running away from a level 13 skeleton."
+            ]
+        },
+        "steps": [
+            "Talk to Father Aereck in the Lumbridge church.",
+            "Go through the graveyard's southern exit and head to the hut west of Lumbridge Swamp.",
+            "Talk to Father Urhney inside the hut to receive the Ghostspeak amulet.",
+            "Head to the Lumbridge graveyard south of the church.",
+            "Equip the Ghostspeak amulet and click the coffin, then talk to the ghost.",
+            "Head to the Wizards' Tower and climb down the ladder to the basement.",
+            "Search the altar to receive a ghost's skull. A level 13 skeleton will appear, but you can avoid fighting it.",
+            "Go back to the graveyard and use the skull on the coffin with it open.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "romeo_and_juliet": {
+        "name": "Romeo & Juliet",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Cadava berries (Can be obtained during quest)"
+            ],
+            "quests": [],
+            "other": []
+        },
+        "steps": [
+            "Talk to Romeo in Varrock Square.",
+            "Talk to Juliet on the upper floor balcony of the mansion west of Varrock west bank.",
+            "Juliet will provide you with a letter if Recipe for Disaster is incomplete.",
+            "Give Juliet's letter to Romeo.",
+            "Talk to Father Lawrence in the church east of the Varrock Palace.",
+            "If you don't already have cadava berries, pick them directly west of the South-east Varrock mine.",
+            "Talk to the Apothecary south of Varrock west bank to get the potion.",
+            "Give the potion to Juliet.",
+            "Go back to Romeo and tell him to meet Juliet in the crypt.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "sheep_shearer": {
+        "name": "Sheep Shearer",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "20 balls of wool (unnoted)"
+            ],
+            "quests": [],
+            "other": []
+        },
+        "steps": [
+            "If you already have 20 unnoted balls of wool:",
+            "Talk to Fred the Farmer north of Lumbridge.",
+            "Fred takes the 20 balls of wool.",
+            "Congratulations, quest complete!",
+            "If you don't have the balls of wool:",
+            "Talk to Fred the Farmer north of Lumbridge. He will give you shears if you do not have them.",
+            "Enter the sheep pen to the east, connected to his house, and shear sheep for 20 wool.",
+            "Note: You cannot shear Rams or 'The Thing'. If attacked by a ram, run out of the pen until it stops targeting you.",
+            "Go to the 2nd floor of Lumbridge Castle.",
+            "Click on the spinning wheel in the southern room to spin the wool into balls of wool.",
+            "With 20 unnoted balls of wool, return to Fred the Farmer.",
+            "Talk to Fred the Farmer and hand them in.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "shield_of_arrav": {
+        "name": "Shield of Arrav",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Phoenix Gang: 20 coins",
+                "Black Arm Gang: 2 Phoenix crossbows (obtained during the quest)"
+            ],
+            "quests": [],
+            "other": [
+                "A trustworthy friend or partner. Players can join the official chat-channel 'OSRS SOA' to look for a partner."
+            ]
+        },
+        "steps": [
+            "Talk to Reldo, located in the library in Varrock Palace.",
+            "Check the bookcase with a bright blue book in the top shelf, and read the book.",
+            "Talk to Reldo again.",
+            "Choose to join either the Phoenix Gang or the Black Arm Gang.",
+            "Phoenix Gang Path:",
+            "Talk to Baraek, the fur trader in Varrock Square, and ask about the Phoenix Gang.",
+            "Go to the Phoenix Gang Hideout in the south-east corner of Varrock.",
+            "Talk to Straven.",
+            "Kill Jonny the Beard in Varrock's Blue Moon Inn and pick up the Intel report.",
+            "Report back to Straven to become a member of the Phoenix Gang.",
+            "Open the chest in the south-west corner of the hideout to find half of the Shield of Arrav.",
+            "Trade the Weapon store key to your partner.",
+            "Black Arm Gang Path:",
+            "Talk to Charlie the Tramp near the south entrance of Varrock.",
+            "Go down the alley and enter the Black Arm Gang headquarters.",
+            "Talk to Katrine.",
+            "Trade your partner for a weapon store key.",
+            "Go to the south-east corner of Varrock and find the small room with a ladder.",
+            "Use the key on the door and climb up the ladder.",
+            "Kill the Weaponsmaster or use Telekinetic Grab to pick up two Phoenix crossbows.",
+            "Pick up both Phoenix crossbows and take them to Katrine to become a member of the Black Arm Gang.",
+            "Go upstairs in the headquarters and open the cupboard to the south of the stairs to find the right half of the Shield of Arrav.",
+            "Finishing Up:",
+            "Take your half of the shield to Curator Haig Halen in the Varrock Museum.",
+            "Trade your half of the certificate with your partner.",
+            "Use both halves of the certificate on each other to make a completed certificate.",
+            "Take the certificate to King Roald in the castle to receive your reward.",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "vampyre_slayer": {
+        "name": "Vampyre Slayer",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Hammer (can be bought from the general store just north of the Blue Moon Inn for 1 coin)",
+                "Beer (can be bought during the quest for 2 coins)",
+                "Garlic (can be obtained during the quest)",
+                "Stake (obtained from Dr Harlow after giving him a beer)"
+            ],
+            "quests": [],
+            "other": [
+                "Able to defeat a combat level 34 vampyre with a very high health recovery rate."
+            ]
+        },
+        "steps": [
+            "Talk to Morgan in Draynor Village about a vampyre.",
+            "Go upstairs in Morgan's house and take garlic from the cupboard.",
+            "Talk to Dr Harlow in the Blue Moon Inn in Varrock, south of Varrock Centre.",
+            "Buy a beer if you haven't already.",
+            "Talk to Dr Harlow again and receive a stake.",
+            "Buy a hammer from the general store just north of the bar if you haven't already.",
+            "Bring your combat gear (food recommended), garlic, hammer, and stake to Draynor Manor.",
+            "Go to the basement (east stairs, not through the west room).",
+            "Open the coffin and kill Count Draynor. (You do not need to use the hammer/stake on him. Just kill him with them in your inventory).",
+            "Congratulations, quest complete!"
+        ]
+    },
+    "witchs_potion": {
+        "name": "Witch's Potion",
+        "requirements": {
+            "skills": [],
+            "items": [
+                "Burnt meat",
+                "Eye of newt",
+                "Onion",
+                "Rat's tail (only obtainable after starting the quest)"
+            ],
+            "quests": [],
+            "other": []
+        },
+        "steps": [
+            "Talk to Hetty in her house in Rimmington to start the quest.",
+            "Kill a rat in the archery store directly west of Hetty to get a rat's tail.",
+            "Buy an eye of newt from Betty in Port Sarim for 3gp.",
+            "Run to the chapel south of Port Sarim, kill a giant rat, and take the raw rat meat.",
+            "Run back to Hetty's house and use the raw rat meat on the fireplace to burn it. If you accidentally cook it, re-cook it on the fireplace again to burn it.",
+            "Pick an onion from the field north of Rimmington.",
+            "Talk to Hetty while carrying all four items.",
+            "Drink from the cauldron.",
+            "Congratulations, quest complete!"
+        ]
+    }
+
+}
