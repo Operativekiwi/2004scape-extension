@@ -54,48 +54,64 @@ async function fetchRecentListings() {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "fetchItemListings") {
-        const url = `https://lostcity.markets/items/${request.slug}`;
+        const buyUrl = `https://lostcity.markets/items/${request.slug}?type=buy`;
+        const sellUrl = `https://lostcity.markets/items/${request.slug}?type=sell`;
         
-        console.log("Fetching item listings from:", url); // Debugging
+        console.log("Fetching item listings from:", buyUrl, sellUrl);
 
-        fetch(url)
-            .then(response => response.text())
-            .then(html => {
-                console.log("Received response from", url); // Debugging
+        Promise.all([
+            fetch(buyUrl).then(response => response.text()),
+            fetch(sellUrl).then(response => response.text())
+        ])
+        .then(([buyHtml, sellHtml]) => {
+            let allListings = [];
 
-                // Extract the JSON embedded in <div id="app" data-page="{...}">
-                const jsonMatch = html.match(/<div id="app" data-page="([^"]+)">/);
-                if (!jsonMatch) {
-                    console.error("Failed to find JSON data in page.");
-                    sendResponse({ success: false, listings: [] });
-                    return;
+            // Process buy listings
+            const buyJsonMatch = buyHtml.match(/<div id="app" data-page="([^"]+)">/);
+            if (buyJsonMatch) {
+                const buyJsonData = JSON.parse(buyJsonMatch[1].replace(/&quot;/g, '"'));
+                
+                if (buyJsonData?.props?.listings?.data) {
+                    const buyListings = buyJsonData.props.listings.data.map((listing) => ({
+                        type: "Buy",
+                        details: `${listing.quantity} for ${listing.price} GP ea.`,
+                        username: listing.username || "Unknown",
+                        time: new Date(listing.updatedAt).toLocaleString(),
+                        notes: listing.notes || "None",
+                    }));
+                    allListings = allListings.concat(buyListings);
                 }
+            }
 
-                const jsonData = JSON.parse(jsonMatch[1].replace(/&quot;/g, '"')); // Convert encoded JSON
-
-                if (!jsonData || !jsonData.props || !jsonData.props.listings || !jsonData.props.listings.data) {
-                    console.error("No listings found in parsed data.");
-                    sendResponse({ success: false, listings: [] });
-                    return;
+            // Process sell listings
+            const sellJsonMatch = sellHtml.match(/<div id="app" data-page="([^"]+)">/);
+            if (sellJsonMatch) {
+                const sellJsonData = JSON.parse(sellJsonMatch[1].replace(/&quot;/g, '"'));
+                
+                if (sellJsonData?.props?.listings?.data) {
+                    const sellListings = sellJsonData.props.listings.data.map((listing) => ({
+                        type: "Sell",
+                        details: `${listing.quantity} for ${listing.price} GP ea.`,
+                        username: listing.username || "Unknown",
+                        time: new Date(listing.updatedAt).toLocaleString(),
+                        notes: listing.notes || "None",
+                    }));
+                    allListings = allListings.concat(sellListings);
                 }
+            }
 
-                const listings = jsonData.props.listings.data.map((listing) => ({
-                    type: listing.type === "buy" ? "Buy" : "Sell",
-                    details: `${listing.quantity} for ${listing.price} GP ea.`,
-                    username: listing.username || "Unknown",
-                    time: new Date(listing.updatedAt).toLocaleString(),
-                    notes: listing.notes || "None",
-                }));
+            // Sort listings by most recent time
+            allListings.sort((a, b) => new Date(b.time) - new Date(a.time));
 
-                console.log("Parsed listings:", listings); // Debugging
-                sendResponse({ success: true, listings });
-            })
-            .catch(error => {
-                console.error("Failed to fetch item listings:", error);
-                sendResponse({ success: false, listings: [] });
-            });
+            console.log("Parsed listings:", allListings);
+            sendResponse({ success: true, listings: allListings });
+        })
+        .catch(error => {
+            console.error("Failed to fetch item listings:", error);
+            sendResponse({ success: false, listings: [] });
+        });
 
-        return true; //
+        return true; // Indicates we'll send response asynchronously
     } else if (request.action === "fetchRecentListings") {
         fetchRecentListings()
             .then(listings => {
@@ -109,4 +125,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     }
 });
-

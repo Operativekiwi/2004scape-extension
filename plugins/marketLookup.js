@@ -28,6 +28,160 @@ function loadItemListings(slug, callback) {
   });
 }
 
+function displayItemDetails(itemSlug, listings, resultsContainer) {
+  resultsContainer.innerHTML = ""; // Clear previous content
+
+  // Container for item details
+  const itemDetailsContainer = document.createElement('div');
+  itemDetailsContainer.style.textAlign = 'center';
+  itemDetailsContainer.style.marginBottom = '10px';
+
+  // Item Image & Name
+  const itemLink = document.createElement('a');
+  itemLink.href = `https://lostcity.markets/items/${itemSlug}?type=buy`;
+  itemLink.target = '_blank';
+  itemLink.style.textDecoration = 'none';
+  itemLink.style.color = 'inherit';
+
+  const itemImage = document.createElement('img');
+  itemImage.src = `https://lostcity.markets/img/items/${itemSlug}.png`;
+  itemImage.alt = itemSlug;
+  itemImage.style.width = '64px';
+  itemImage.style.height = '64px';
+  itemImage.style.cursor = 'pointer';
+
+  const itemName = document.createElement('h2');
+  itemName.textContent = itemSlug.replace(/-/g, " ").toUpperCase();
+  itemName.style.color = '#007bff';
+  itemName.style.cursor = 'pointer';
+
+  itemLink.appendChild(itemImage);
+  itemLink.appendChild(itemName);
+  itemDetailsContainer.appendChild(itemLink);
+
+  // Price Info (Matching UI Style)
+  const priceInfoContainer = document.createElement('div');
+  priceInfoContainer.style.display = 'flex';
+  priceInfoContainer.style.justifyContent = 'center';
+  priceInfoContainer.style.gap = '15px';
+  priceInfoContainer.style.marginTop = '10px';
+  priceInfoContainer.style.backgroundColor = '#222';
+  priceInfoContainer.style.padding = '8px';
+  priceInfoContainer.style.borderRadius = '6px';
+
+  const priceTypes = [
+      { label: 'Gen. Store', value: '0' },
+      { label: 'High Alch', value: '0' },
+      { label: 'Low Alch', value: '0' }
+  ];
+
+  priceTypes.forEach(priceType => {
+      const priceDiv = document.createElement('div');
+      priceDiv.style.textAlign = 'center';
+      priceDiv.innerHTML = `
+          <u style="color: #bbb;">${priceType.label}:</u>
+          <p style="color: #ddd;">${priceType.value}GP</p>
+      `;
+      priceInfoContainer.appendChild(priceDiv);
+  });
+
+  itemDetailsContainer.appendChild(priceInfoContainer);
+  resultsContainer.appendChild(itemDetailsContainer);
+
+  // Filter checkboxes (Buy/Sell)
+  const filterContainer = document.createElement('div');
+  filterContainer.style.display = 'flex';
+  filterContainer.style.justifyContent = 'center';
+  filterContainer.style.gap = '15px';
+  filterContainer.style.marginBottom = '10px';
+
+  const createFilterCheckbox = (label, id, defaultChecked) => {
+      const wrapper = document.createElement('label');
+      wrapper.style.display = 'flex';
+      wrapper.style.alignItems = 'center';
+      wrapper.style.gap = '4px';
+      wrapper.style.cursor = 'pointer';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = id;
+      checkbox.checked = defaultChecked;
+
+      const text = document.createElement('span');
+      text.textContent = label;
+      text.style.fontSize = '12px';
+      text.style.color = '#fff';
+
+      wrapper.appendChild(checkbox);
+      wrapper.appendChild(text);
+      return { wrapper, checkbox };
+  };
+
+  const { wrapper: buyWrapper, checkbox: buyCheckbox } = createFilterCheckbox('Buy', 'filter-buy', true);
+  const { wrapper: sellWrapper, checkbox: sellCheckbox } = createFilterCheckbox('Sell', 'filter-sell', true);
+
+  filterContainer.appendChild(buyWrapper);
+  filterContainer.appendChild(sellWrapper);
+  resultsContainer.appendChild(filterContainer);
+
+  // Listings Table (Same as Search Results)
+  const listingsTable = document.createElement("table");
+  listingsTable.style.width = "100%";
+  listingsTable.style.borderCollapse = "collapse";
+  listingsTable.style.marginTop = "10px";
+  listingsTable.style.fontSize = "12px";
+  listingsTable.style.lineHeight = "1.2";
+
+  const tableHeader = `
+      <thead>
+          <tr style="background-color: #222; color: #fff;">
+              <th style="padding: 3px;">Type</th>
+              <th style="padding: 3px;">Details</th>
+              <th style="padding: 3px;">User</th>
+              <th style="padding: 3px;">Time</th>
+              <th style="padding: 3px;">Notes</th>
+          </tr>
+      </thead>
+  `;
+
+  const renderListings = () => {
+      const activeFilters = {
+          Buy: buyCheckbox.checked,
+          Sell: sellCheckbox.checked
+      };
+
+      const filteredListings = listings.filter(listing => activeFilters[listing.type]);
+
+      let tableBody = "<tbody>";
+      filteredListings.forEach((listing) => {
+          tableBody += `
+              <tr style="border-bottom: 1px solid #ddd;">
+                  <td style="padding: 3px; font-weight: bold; color: ${listing.type === "Buy" ? "red" : "green"};">
+                      ${listing.type}
+                  </td>
+                  <td style="padding: 3px;">${listing.details}</td>
+                  <td style="padding: 3px;">${listing.username}</td>
+                  <td style="padding: 3px;">${listing.time}</td>
+                  <td style="padding: 3px;">${listing.notes}</td>
+              </tr>
+          `;
+      });
+      tableBody += "</tbody>";
+
+      listingsTable.innerHTML = tableHeader + tableBody;
+  };
+
+  // Initial render
+  renderListings();
+
+  // Add event listeners for filtering
+  buyCheckbox.addEventListener('change', renderListings);
+  sellCheckbox.addEventListener('change', renderListings);
+
+  resultsContainer.appendChild(listingsTable);
+}
+
+
 function createRecentListings() {
   const recentListingsContainer = document.createElement('div');
   recentListingsContainer.id = 'recent-listings';
@@ -167,9 +321,24 @@ function createRecentListings() {
               `;
 
               listingCard.addEventListener('click', () => {
-                  window.open(`https://lostcity.markets/items/${listing.itemSlug}`, '_blank');
-              });
-
+                loadItemListings(listing.itemSlug, (listings) => {
+                    // Reuse the existing UI format for item details
+                    const resultsContainer = document.getElementById("market-results");
+                    const searchContainer = document.querySelector("#tab-market-lookup div");
+                    const backButton = document.querySelector("#tab-market-lookup button");
+            
+                    if (resultsContainer && searchContainer && backButton) {
+                        searchContainer.style.display = "none"; // Hide search
+                        backButton.style.display = "block"; // Show back button
+            
+                        resultsContainer.innerHTML = "";
+                                    
+                        // Reuse the existing function for displaying item details
+                        displayItemDetails(listing.itemSlug, listings, resultsContainer);
+                    }
+                });
+            });
+                        
               listingsGrid.appendChild(listingCard);
           });
       });
@@ -280,32 +449,109 @@ function createMarketLookupContent() {
                 searchContainer.style.display = "none";
                 backButton.style.display = "block";
             
-                resultsContainer.innerHTML = `Loading details for ${item.name}...`;
+                resultsContainer.innerHTML = "";
             
                 loadItemListings(item.slug, (listings) => {
-                    // Create a clickable container for the image & name
-                    resultsContainer.innerHTML = `
-                        <div style="text-align: center;">
-                            <a href="https://lostcity.markets/items/${item.slug}" target="_blank" style="text-decoration: none; color: inherit;">
-                                <img src="https://lostcity.markets/img/items/${item.slug}.png" 
-                                     alt="${item.name}" 
-                                     style="width: 64px; height: 64px; cursor: pointer;">
-                                <h2 style="color: #007bff; cursor: pointer;">${item.name}</h2>
-                            </a>
-                        </div>
-                    `;
+                    // Create a container for item details and price information
+                    const itemDetailsContainer = document.createElement('div');
+                    itemDetailsContainer.style.textAlign = 'center';
+                    itemDetailsContainer.style.marginBottom = '10px';
             
-                    if (listings.length === 0) {
-                        resultsContainer.innerHTML += "<p>No listings found.</p>";
-                        return;
-                    }
+                    // Add item image and name with link
+                    const itemLink = document.createElement('a');
+                    itemLink.href = `https://lostcity.markets/items/${item.slug}?type=buy`;
+                    itemLink.target = '_blank';
+                    itemLink.style.textDecoration = 'none';
+                    itemLink.style.color = 'inherit';
             
+                    const itemImage = document.createElement('img');
+                    itemImage.src = `https://lostcity.markets/img/items/${item.slug}.png`;
+                    itemImage.alt = item.name;
+                    itemImage.style.width = '64px';
+                    itemImage.style.height = '64px';
+                    itemImage.style.cursor = 'pointer';
+            
+                    const itemName = document.createElement('h2');
+                    itemName.textContent = item.name;
+                    itemName.style.color = '#007bff';
+                    itemName.style.cursor = 'pointer';
+            
+                    itemLink.appendChild(itemImage);
+                    itemLink.appendChild(itemName);
+                    itemDetailsContainer.appendChild(itemLink);
+            
+                    // Add price information
+                    const priceInfoContainer = document.createElement('div');
+                    priceInfoContainer.style.display = 'flex';
+                    priceInfoContainer.style.justifyContent = 'center';
+                    priceInfoContainer.style.gap = '15px';
+                    priceInfoContainer.style.marginTop = '10px';
+                    priceInfoContainer.style.backgroundColor = '#222';
+                    priceInfoContainer.style.padding = '8px';
+                    priceInfoContainer.style.borderRadius = '6px';
+            
+                    const priceTypes = [
+                        { label: 'Gen. Store', value: '0' },
+                        { label: 'High Alch', value: '0' },
+                        { label: 'Low Alch', value: '0' }
+                    ];
+            
+                    priceTypes.forEach(priceType => {
+                        const priceDiv = document.createElement('div');
+                        priceDiv.style.textAlign = 'center';
+                        priceDiv.innerHTML = `
+                            <u style="color: #bbb;">${priceType.label}:</u>
+                            <p style="color: #ddd;">${priceType.value}GP</p>
+                        `;
+                        priceInfoContainer.appendChild(priceDiv);
+                    });
+            
+                    itemDetailsContainer.appendChild(priceInfoContainer);
+                    resultsContainer.appendChild(itemDetailsContainer);
+            
+                    // Filter checkboxes
+                    const filterContainer = document.createElement('div');
+                    filterContainer.style.display = 'flex';
+                    filterContainer.style.justifyContent = 'center';
+                    filterContainer.style.gap = '15px';
+                    filterContainer.style.marginBottom = '10px';
+            
+                    const createFilterCheckbox = (label, id, defaultChecked) => {
+                        const wrapper = document.createElement('label');
+                        wrapper.style.display = 'flex';
+                        wrapper.style.alignItems = 'center';
+                        wrapper.style.gap = '4px';
+                        wrapper.style.cursor = 'pointer';
+            
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = id;
+                        checkbox.checked = defaultChecked;
+            
+                        const text = document.createElement('span');
+                        text.textContent = label;
+                        text.style.fontSize = '12px';
+                        text.style.color = '#fff';
+            
+                        wrapper.appendChild(checkbox);
+                        wrapper.appendChild(text);
+                        return { wrapper, checkbox };
+                    };
+            
+                    const { wrapper: buyWrapper, checkbox: buyCheckbox } = createFilterCheckbox('Buy', 'filter-buy', true);
+                    const { wrapper: sellWrapper, checkbox: sellCheckbox } = createFilterCheckbox('Sell', 'filter-sell', true);
+            
+                    filterContainer.appendChild(buyWrapper);
+                    filterContainer.appendChild(sellWrapper);
+                    resultsContainer.appendChild(filterContainer);
+            
+                    // Listings table
                     const listingsTable = document.createElement("table");
                     listingsTable.style.width = "100%";
                     listingsTable.style.borderCollapse = "collapse";
                     listingsTable.style.marginTop = "10px";
-                    listingsTable.style.fontSize = "12px";  // Reduced font size
-                    listingsTable.style.lineHeight = "1.2"; // Reduce space between rows
+                    listingsTable.style.fontSize = "12px";
+                    listingsTable.style.lineHeight = "1.2";
             
                     const tableHeader = `
                         <thead>
@@ -319,27 +565,44 @@ function createMarketLookupContent() {
                         </thead>
                     `;
             
-                    let tableBody = "<tbody>";
-                    listings.forEach((listing) => {
-                        tableBody += `
-                            <tr style="border-bottom: 1px solid #ddd;">
-                                <td style="padding: 3px; font-weight: bold; color: ${listing.type === "Buy" ? "red" : "green"};">
-                                    ${listing.type}
-                                </td>
-                                <td style="padding: 3px;">${listing.details}</td>
-                                <td style="padding: 3px;">${listing.username}</td>
-                                <td style="padding: 3px;">${listing.time}</td>
-                                <td style="padding: 3px;">${listing.notes}</td>
-                            </tr>
-                        `;
-                    });
-                    tableBody += "</tbody>";
+                    const renderListings = () => {
+                        const activeFilters = {
+                            Buy: buyCheckbox.checked,
+                            Sell: sellCheckbox.checked
+                        };
             
-                    listingsTable.innerHTML = tableHeader + tableBody;
+                        const filteredListings = listings.filter(listing => activeFilters[listing.type]);
+            
+                        let tableBody = "<tbody>";
+                        filteredListings.forEach((listing) => {
+                            tableBody += `
+                                <tr style="border-bottom: 1px solid #ddd;">
+                                    <td style="padding: 3px; font-weight: bold; color: ${listing.type === "Buy" ? "red" : "green"};">
+                                        ${listing.type}
+                                    </td>
+                                    <td style="padding: 3px;">${listing.details}</td>
+                                    <td style="padding: 3px;">${listing.username}</td>
+                                    <td style="padding: 3px;">${listing.time}</td>
+                                    <td style="padding: 3px;">${listing.notes}</td>
+                                </tr>
+                            `;
+                        });
+                        tableBody += "</tbody>";
+            
+                        listingsTable.innerHTML = tableHeader + tableBody;
+                    };
+            
+                    // Initial render
+                    renderListings();
+            
+                    // Add event listeners for filtering
+                    buyCheckbox.addEventListener('change', renderListings);
+                    sellCheckbox.addEventListener('change', renderListings);
+            
                     resultsContainer.appendChild(listingsTable);
                 });
             });
-        });
+          });
       }, 300); // Adjust delay (300ms) for better responsiveness
   });
 
