@@ -292,3 +292,24 @@ if (document.readyState === "loading") {
 }
 
 window.pluginManager = pluginManager;
+
+function toggleExtensionsPanel() {
+  const panel = document.getElementById("vertical-tabs-container");
+  if (panel) {
+    if (panel.style.visibility === "hidden") {
+      panel.style.visibility = "visible";
+      panel.style.opacity = "1";
+    } else {
+      panel.style.visibility = "hidden";
+      panel.style.opacity = "0";
+    }
+  }
+}
+
+
+// Listen for messages from the background script
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.action === "toggleExtensionsPanel") {
+    toggleExtensionsPanel();
+  }
+});

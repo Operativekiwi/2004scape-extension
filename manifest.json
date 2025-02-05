@@ -21,6 +21,9 @@
   "background": {
     "service_worker": "background.js"
   },
+  "action": {
+    "default_title": "Toggle Extensions Panel"
+  },
   "web_accessible_resources": [
     {
       "resources": [
@@ -30,7 +33,7 @@
       "matches": ["<all_urls>"]
     }
   ],
-  "icons": {
+    "icons": {
     "48": "icons/world-icon.png"
   },
   "browser_specific_settings": {

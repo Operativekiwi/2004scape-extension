@@ -125,3 +125,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     }
 });
+
+// Listen for messages from the background script
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.action === "toggleExtensionsPanel") {
+      toggleExtensionsPanel();
+    }
+  });
+
+chrome.action.onClicked.addListener((tab) => {
+    chrome.tabs.sendMessage(tab.id, { action: "toggleExtensionsPanel" });
+});
+
+  
