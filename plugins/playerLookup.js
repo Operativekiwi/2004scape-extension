@@ -1,22 +1,3 @@
-async function fetchPlayerData(playerName) {
-  try {
-    const url = `https://2004.lostcity.rs/mod/session/${encodeURIComponent(playerName)}`;
-    const response = await fetch(url);
-
-    if (response.redirected) {
-      return { exists: false };
-    }
-
-    const html = await response.text();
-    const logs = parseSessionLog(html);
-    const status = determineOnlineStatus(logs);
-    return { exists: true, status, logs };
-  } catch (error) {
-    console.error("Failed to fetch player data:", error);
-    return { exists: false };
-  }
-}
-
 async function fetchAdventureLog(playerName) {
   try {
     const url = `https://2004.lostcity.rs/player/adventurelog/${encodeURIComponent(playerName)}`;
@@ -168,10 +149,9 @@ function createPlayerLookupContent() {
     resultContainer.style.display = "block";
     resultContainer.innerHTML = "Loading...";
 
-    const playerData = await fetchPlayerData(playerName);
     const playerSkills = await fetchPlayerSkills(playerName);
 
-    if (!playerData.exists || !playerSkills) {
+    if (!playerSkills) {
       resultContainer.innerHTML = "Player not found.";
       return;
     }
