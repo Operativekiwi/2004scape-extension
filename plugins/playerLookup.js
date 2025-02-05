@@ -177,7 +177,6 @@ function createPlayerLookupContent() {
     }
 
     const statusDiv = document.createElement("div");
-    statusDiv.textContent = `Player Status: ${playerData.status}`;
     resultContainer.innerHTML = "";
     resultContainer.appendChild(statusDiv);
 
