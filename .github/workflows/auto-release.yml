@@ -31,6 +31,7 @@ jobs:
         cp manifest.json manifest.firefox.json
         jq '.manifest_version = 2 
             | .background = {scripts: ["background.js"], persistent: false} 
+            | .permissions += ["webRequest", "webRequestBlocking"] 
             | .web_accessible_resources = ["plugins/*.js", "plugins/*.json"]' manifest.firefox.json > manifest.firefox.json.tmp 
         mv manifest.firefox.json.tmp manifest.firefox.json
         mv manifest.firefox.json manifest.json  # Ensure correct filename inside the zip

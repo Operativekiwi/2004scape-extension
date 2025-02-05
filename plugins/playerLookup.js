@@ -165,7 +165,7 @@ function createPlayerLookupContent() {
       "Attack", "Hitpoints", "Mining", "Strength", "Agility", "Smithing",
       "Defence", "Herblore", "Fishing", "Ranged", "Thieving", "Cooking",
       "Prayer", "Crafting", "Firemaking", "Magic", "Fletching", "Woodcutting",
-      "Runecraft"
+      "Runecrafting"
     ];
 
     const skillGrid = document.createElement("div");
@@ -180,8 +180,9 @@ function createPlayerLookupContent() {
       skillDiv.style.alignItems = "center";
     
       const icon = document.createElement("img");
-      icon.src = `https://oldschool.runescape.wiki/images/${skill}_icon.png`;
-      icon.alt = skill;
+      const iconName = skill === "Runecrafting" ? "Runecraft" : skill;
+      icon.src = `https://oldschool.runescape.wiki/images/${iconName}_icon.png`;
+            icon.alt = skill;
       icon.style.width = "20px";
       icon.style.height = "20px";
       icon.style.marginRight = "5px";
