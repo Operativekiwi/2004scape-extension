@@ -38,5 +38,7 @@
       "id": "2004scape-tools@developer.mozilla.org",
       "strict_min_version": "91.0"
     }
-  }
+  },
+  "homepage_url": "https://yourgithubusername.github.io/",
+  "privacy_policy": "https://yourgithubusername.github.io/privacy_policy.html"
 }
