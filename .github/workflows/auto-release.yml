@@ -30,7 +30,8 @@ jobs:
         # Create a modified manifest for Firefox
         cp manifest.json manifest.firefox.json
         jq '.manifest_version = 2 | .background = {scripts: ["background.js"], persistent: false}' manifest.firefox.json > manifest.firefox.json.tmp && mv manifest.firefox.json.tmp manifest.firefox.json
-        zip -r firefox-extension.zip content_script.js background.js manifest.firefox.json style.css icons/ plugins/
+        mv manifest.firefox.json manifest.json  # Ensure correct filename inside the zip
+        zip -r firefox-extension.zip content_script.js background.js manifest.json style.css icons/ plugins/
         ls -l
 
     - name: Create a release
