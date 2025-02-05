@@ -27,10 +27,10 @@ jobs:
 
     - name: Prepare Firefox extension
       run: |
-        # Update manifest for Firefox
-        jq '.browser_specific_settings = {gecko: {id: "2004scape-tools@developer.mozilla.org", strict_min_version: "91.0"}}' manifest.json > manifest.firefox.json
-        mv manifest.firefox.json manifest.json
-        zip -r firefox-extension.zip content_script.js background.js manifest.json style.css icons/ plugins/
+        # Create a modified manifest for Firefox
+        cp manifest.json manifest.firefox.json
+        jq '.manifest_version = 2 | .background = {scripts: ["background.js"], persistent: false}' manifest.firefox.json > manifest.firefox.json.tmp && mv manifest.firefox.json.tmp manifest.firefox.json
+        zip -r firefox-extension.zip content_script.js background.js manifest.firefox.json style.css icons/ plugins/
         ls -l
 
     - name: Create a release
@@ -66,7 +66,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # ✅ NEW STEP: Send Discord Notification
     - name: Send Discord Notification
       run: |
         curl -H "Content-Type: application/json" -X POST -d '{
