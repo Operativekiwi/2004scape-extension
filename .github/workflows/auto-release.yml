@@ -19,10 +19,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Node.js
+    - name: Set up Node.js 18
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
 
     - name: Install chrome-webstore-upload-cli
       run: npm install -g chrome-webstore-upload-cli
@@ -67,14 +67,13 @@ jobs:
 
     - name: Prepare Firefox extension
       run: |
-        # Create a modified manifest for Firefox
         cp manifest.json manifest.firefox.json
         jq '.manifest_version = 2 
             | .background = {scripts: ["background.js"], persistent: false} 
             | .permissions += ["webRequest", "webRequestBlocking"] 
             | .web_accessible_resources = ["plugins/*.js", "plugins/*.json"]' manifest.firefox.json > manifest.firefox.json.tmp 
         mv manifest.firefox.json.tmp manifest.firefox.json
-        mv manifest.firefox.json manifest.json  # Ensure correct filename inside the zip
+        mv manifest.firefox.json manifest.json
         zip -r firefox-extension.zip content_script.js background.js manifest.json style.css icons/ plugins/
         ls -l
 
