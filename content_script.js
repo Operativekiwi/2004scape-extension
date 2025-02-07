@@ -132,39 +132,9 @@ async function createVerticalTabsContainer() {
   tabsContainer.style.overflow = "hidden";
   tabsContainer.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.2)";
   tabsContainer.style.display = "flex";
-  tabsContainer.style.resize = "both";
-  tabsContainer.style.overflow = "auto";
-
-  // Drag functionality
-  let isDragging = false;
-  let offsetX, offsetY;
-
-  tabsContainer.addEventListener("mousedown", (e) => {
-    if (e.target === tabsContainer) {
-      isDragging = true;
-      offsetX = e.clientX - tabsContainer.getBoundingClientRect().left;
-      offsetY = e.clientY - tabsContainer.getBoundingClientRect().top;
-      tabsContainer.style.cursor = "move";
-    }
-  });
-
-  document.addEventListener("mousemove", (e) => {
-    if (isDragging) {
-      const newX = e.clientX - offsetX;
-      const newY = e.clientY - offsetY;
-      tabsContainer.style.left = `${newX}px`;
-      tabsContainer.style.top = `${newY}px`;
-      tabsContainer.style.right = "";
-    }
-  });
-
-  document.addEventListener("mouseup", () => {
-    if (isDragging) {
-      isDragging = false;
-      tabsContainer.style.cursor = "default";
-    }
-  });
-
+  tabsContainer.style.resize = "none";
+  tabsContainer.style.overflow = "hidden";
+    
   const tabsBar = document.createElement("div");
   tabsBar.style.width = "50px";
   tabsBar.style.backgroundColor = "#2a2a2a";
@@ -212,6 +182,42 @@ async function createVerticalTabsContainer() {
   tabsContainer.appendChild(tabContent);
 
   document.body.appendChild(tabsContainer);
+
+    // Drag functionality
+    let isDragging = false;
+    let offsetX, offsetY;
+  
+    tabsBar.style.cursor = 'grab'; // Initial cursor style
+    tabsBar.style.userSelect = 'none'; // Prevent text selection during drag
+  
+  
+    tabsBar.addEventListener("mousedown", (e) => {
+      // Only start dragging if clicking on the bar background (not buttons)
+      if (e.target !== tabsBar) return;
+      
+      isDragging = true;
+      const containerRect = tabsContainer.getBoundingClientRect();
+      offsetX = e.clientX - containerRect.left;
+      offsetY = e.clientY - containerRect.top;
+      tabsBar.style.cursor = 'grabbing';
+    });
+    
+    document.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+    
+      const newX = e.clientX - offsetX;
+      const newY = e.clientY - offsetY;
+      tabsContainer.style.left = `${newX}px`;
+      tabsContainer.style.top = `${newY}px`;
+      tabsContainer.style.right = ""; // Reset right positioning
+    });
+    
+    document.addEventListener("mouseup", () => {
+      if (isDragging) {
+        isDragging = false;
+        tabsBar.style.cursor = 'grab';
+      }
+    });
 }
 
 function refreshTabBar() {
