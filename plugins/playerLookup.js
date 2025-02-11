@@ -4,26 +4,18 @@ async function fetchAdventureLog(playerName) {
     const response = await fetch(url);
     const html = await response.text();
     
-    // Parse the HTML
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
     
-    // Find all log entries
     const entries = [];
     const logDivs = doc.querySelectorAll('div[style="text-align: left"]');
     
     logDivs.forEach(div => {
       const timestamp = div.querySelector('span')?.textContent.trim() || '';
-      // Get the text content after the timestamp
-      const content = div.textContent.split('\n')
-        .map(line => line.trim())
-        .filter(line => line && !line.includes(timestamp))[0] || '';
+      const content = div.textContent.split('\n').map(line => line.trim()).filter(line => line && !line.includes(timestamp))[0] || '';
       
       if (timestamp && content) {
-        entries.push({
-          timestamp,
-          content
-        });
+        entries.push({ timestamp, content });
       }
     });
 
@@ -39,79 +31,40 @@ async function fetchPlayerSkills(playerName) {
     const url = `https://2004.lostcity.rs/hiscores/player/${encodeURIComponent(playerName)}`;
     const response = await fetch(url);
 
-    if (response.redirected) {
-      return null; // Player does not exist
-    }
+    if (response.redirected) return null;
 
     const html = await response.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
 
-    // Extract skill data
     const skillRows = doc.querySelectorAll("table tbody tr");
     const skills = {};
+    let totalLevel = 0;
+    let totalXP = 0;
 
     skillRows.forEach(row => {
       const cells = row.querySelectorAll("td");
       if (cells.length === 6) {
         const skillName = cells[2]?.textContent.trim();
         const level = parseInt(cells[4]?.textContent.trim(), 10);
-        const xp = parseInt(cells[5]?.textContent.trim().replace(/,/g, ""), 10);
+        const xp = parseFloat(cells[5]?.textContent.trim().replace(/,/g, "")); // Allow decimal XP values
         if (skillName && !isNaN(level) && !isNaN(xp)) {
-          skills[skillName.toLowerCase()] = { level, xp };
+          if (skillName.toLowerCase() === "overall") {
+            totalLevel = level;
+            totalXP = xp;
+          } else {
+            skills[skillName.toLowerCase()] = { level, xp };
+          }
         }
       }
     });
 
-    // Fill in missing skills with defaults
-    const defaultSkills = [
-      "attack", "defence", "strength", "hitpoints", "ranged", "prayer", "magic",
-      "cooking", "woodcutting", "fletching", "fishing", "firemaking", "crafting",
-      "smithing", "mining", "herblore", "agility", "thieving", "runecrafting"
-    ];
-
-    defaultSkills.forEach(skill => {
-      if (!skills[skill]) {
-        skills[skill] = {
-          level: skill === "hitpoints" ? 10 : 1,
-          xp: 0
-        };
-      }
-    });
-
+    skills["total"] = { level: totalLevel, xp: totalXP };
     return skills;
   } catch (error) {
     console.error("Failed to fetch player skills:", error);
     return null;
   }
-}
-
-function parseSessionLog(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
-
-  // Extract the session log entries
-  const logEntries = Array.from(doc.querySelectorAll("div[style='text-align: left']"));
-  const logs = logEntries.map(entry => {
-    const time = entry.querySelector("span").textContent.trim();
-    const action = entry.textContent.replace(/\s+/g, " ").trim().split("\n").pop();
-    return { time, action };
-  });
-
-  return logs;
-}
-
-function determineOnlineStatus(logs) {
-  if (logs.length === 0) return "Unknown";
-
-  const mostRecentAction = logs[0].action.toLowerCase();
-  if (mostRecentAction.includes("ws socket closed") || mostRecentAction.includes("logged out")) {
-    return "Offline";
-  }
-  if (mostRecentAction.includes("server check in") || mostRecentAction.includes("logged in")) {
-    return "Online";
-  }
-  return "Unknown";
 }
 
 function createPlayerLookupContent() {
@@ -156,11 +109,15 @@ function createPlayerLookupContent() {
       return;
     }
 
-    const statusDiv = document.createElement("div");
     resultContainer.innerHTML = "";
-    resultContainer.appendChild(statusDiv);
+    
+    const skillGrid = document.createElement("div");
+    skillGrid.style.display = "grid";
+    skillGrid.style.gridTemplateColumns = "repeat(3, 1fr)";
+    skillGrid.style.gap = "10px";
+    skillGrid.style.marginTop = "20px";
 
-    // Skills
+    // List of skills in the correct order
     const skills = [
       "Attack", "Hitpoints", "Mining", "Strength", "Agility", "Smithing",
       "Defence", "Herblore", "Fishing", "Ranged", "Thieving", "Cooking",
@@ -168,12 +125,7 @@ function createPlayerLookupContent() {
       "Runecrafting"
     ];
 
-    const skillGrid = document.createElement("div");
-    skillGrid.style.display = "grid";
-    skillGrid.style.gridTemplateColumns = "repeat(3, 1fr)";
-    skillGrid.style.gap = "10px";
-    skillGrid.style.marginTop = "20px";
-
+    // Add individual skills first
     skills.forEach(skill => {
       const skillDiv = document.createElement("div");
       skillDiv.style.display = "flex";
@@ -182,7 +134,7 @@ function createPlayerLookupContent() {
       const icon = document.createElement("img");
       const iconName = skill === "Runecrafting" ? "Runecraft" : skill;
       icon.src = `https://oldschool.runescape.wiki/images/${iconName}_icon.png`;
-            icon.alt = skill;
+      icon.alt = skill;
       icon.style.width = "20px";
       icon.style.height = "20px";
       icon.style.marginRight = "5px";
@@ -192,17 +144,37 @@ function createPlayerLookupContent() {
       label.textContent = skillData?.level || "1";
       label.style.color = "yellow";
       
-      // Add tooltip with XP
       if (skillData?.xp) {
-        const xp = Math.floor(skillData.xp); // Round down decimal places
-        skillDiv.title = `XP: ${xp.toLocaleString()}`;
+        skillDiv.title = `XP: ${skillData.xp.toLocaleString()}`;
       }
     
       skillDiv.appendChild(icon);
       skillDiv.appendChild(label);
       skillGrid.appendChild(skillDiv);
     });
-    
+
+    // Add Total Level at the end
+    const totalDiv = document.createElement("div");
+    totalDiv.style.display = "flex";
+    totalDiv.style.alignItems = "center";
+
+    const totalIcon = document.createElement("img");
+    totalIcon.src = "https://oldschool.runescape.wiki/images/Stats_icon.png";
+    totalIcon.alt = "Total Level";
+    totalIcon.style.width = "20px";
+    totalIcon.style.height = "20px";
+    totalIcon.style.marginRight = "5px";
+
+    const totalLabel = document.createElement("span");
+    totalLabel.textContent = playerSkills["total"].level;
+    totalLabel.style.color = "yellow";
+
+    totalDiv.title = `XP: ${playerSkills["total"].xp.toLocaleString()}`; // Tooltip with total XP
+
+    totalDiv.appendChild(totalIcon);
+    totalDiv.appendChild(totalLabel);
+    skillGrid.appendChild(totalDiv);
+
     resultContainer.appendChild(skillGrid);
 
     const logLink = document.createElement("a");
@@ -212,36 +184,6 @@ function createPlayerLookupContent() {
     logLink.style.display = "block";
     logLink.style.marginTop = "10px";
     resultContainer.appendChild(logLink);
-
-    // Display recent adventure log entries
-    const logEntries = await fetchAdventureLog(playerName);
-    if (logEntries.length > 0) {
-      const recentTitle = document.createElement("h4");
-      recentTitle.textContent = "Recent Events";
-      recentTitle.style.marginTop = "20px";
-      resultContainer.appendChild(recentTitle);
-
-      const entriesContainer = document.createElement("div");
-      entriesContainer.style.marginTop = "10px";
-
-      logEntries.slice(0, 3).forEach(entry => {
-        const entryDiv = document.createElement("div");
-        entryDiv.style.marginBottom = "10px";
-        
-        const timestamp = document.createElement("div");
-        timestamp.style.color = "#888";
-        timestamp.textContent = entry.timestamp;
-        
-        const content = document.createElement("div");
-        content.textContent = entry.content;
-        
-        entryDiv.appendChild(timestamp);
-        entryDiv.appendChild(content);
-        entriesContainer.appendChild(entryDiv);
-      });
-
-      resultContainer.appendChild(entriesContainer);
-    }
   });
 
   return container;
