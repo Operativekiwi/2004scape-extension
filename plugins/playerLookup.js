@@ -28,38 +28,85 @@ async function fetchAdventureLog(playerName) {
 
 async function fetchPlayerSkills(playerName) {
   try {
-    const url = `https://2004.lostcity.rs/hiscores/player/${encodeURIComponent(playerName)}`;
+    const url = `https://2004.lostcity.rs/api/hiscores/player/${encodeURIComponent(playerName)}`;
     const response = await fetch(url);
 
-    if (response.redirected) return null;
+    if (!response.ok) {
+      if (response.status === 404) return null; // Player not found
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-    const html = await response.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
+    const data = await response.json();
 
-    const skillRows = doc.querySelectorAll("table tbody tr");
-    const skills = {};
-    let totalLevel = 0;
-    let totalXP = 0;
+    // Skill type mapping from API documentation
+    const skillMap = {
+      0: "overall",
+      1: "attack",
+      2: "defence",
+      3: "strength",
+      4: "hitpoints",
+      5: "ranged",
+      6: "prayer",
+      7: "magic",
+      8: "cooking",
+      9: "woodcutting",
+      10: "fletching",
+      11: "fishing",
+      12: "firemaking",
+      13: "crafting",
+      14: "smithing",
+      15: "mining",
+      16: "herblore",
+      17: "agility",
+      18: "thieving",
+      21: "runecrafting"
+    };
 
-    skillRows.forEach(row => {
-      const cells = row.querySelectorAll("td");
-      if (cells.length === 6) {
-        const skillName = cells[2]?.textContent.trim();
-        const level = parseInt(cells[4]?.textContent.trim(), 10);
-        const xp = parseFloat(cells[5]?.textContent.trim().replace(/,/g, "")); // Allow decimal XP values
-        if (skillName && !isNaN(level) && !isNaN(xp)) {
-          if (skillName.toLowerCase() === "overall") {
-            totalLevel = level;
-            totalXP = xp;
-          } else {
-            skills[skillName.toLowerCase()] = { level, xp };
-          }
-        }
+    // Initialize skills with default values
+    const skills = {
+      attack: { level: 1, xp: 0 },
+      hitpoints: { level: 10, xp: 1154 }, // Default starting level for Hitpoints
+      mining: { level: 1, xp: 0 },
+      strength: { level: 1, xp: 0 },
+      agility: { level: 1, xp: 0 },
+      smithing: { level: 1, xp: 0 },
+      defence: { level: 1, xp: 0 },
+      herblore: { level: 1, xp: 0 },
+      fishing: { level: 1, xp: 0 },
+      ranged: { level: 1, xp: 0 },
+      thieving: { level: 1, xp: 0 },
+      cooking: { level: 1, xp: 0 },
+      prayer: { level: 1, xp: 0 },
+      crafting: { level: 1, xp: 0 },
+      firemaking: { level: 1, xp: 0 },
+      magic: { level: 1, xp: 0 },
+      fletching: { level: 1, xp: 0 },
+      woodcutting: { level: 1, xp: 0 },
+      runecrafting: { level: 1, xp: 0 },
+      total: { level: 0, xp: 0 }
+    };
+
+    // Populate skills from API data
+    data.forEach(skillEntry => {
+      const skillName = skillMap[skillEntry.type];
+      if (skillName) {
+        skills[skillName] = {
+          level: skillEntry.level,
+          xp: skillEntry.value
+        };
       }
     });
 
-    skills["total"] = { level: totalLevel, xp: totalXP };
+    // Ensure total is set (might be missing if player has no ranked skills)
+    if (!skills.total.level) {
+      skills.total.level = Object.keys(skills)
+        .filter(skill => skill !== "total" && skill !== "overall")
+        .reduce((sum, skill) => sum + skills[skill].level, 0);
+      skills.total.xp = Object.keys(skills)
+        .filter(skill => skill !== "total" && skill !== "overall")
+        .reduce((sum, skill) => sum + skills[skill].xp, 0);
+    }
+
     return skills;
   } catch (error) {
     console.error("Failed to fetch player skills:", error);
@@ -117,7 +164,6 @@ function createPlayerLookupContent() {
     skillGrid.style.gap = "10px";
     skillGrid.style.marginTop = "20px";
 
-    // List of skills in the correct order
     const skills = [
       "Attack", "Hitpoints", "Mining", "Strength", "Agility", "Smithing",
       "Defence", "Herblore", "Fishing", "Ranged", "Thieving", "Cooking",
@@ -125,7 +171,6 @@ function createPlayerLookupContent() {
       "Runecrafting"
     ];
 
-    // Add individual skills first
     skills.forEach(skill => {
       const skillDiv = document.createElement("div");
       skillDiv.style.display = "flex";
@@ -153,7 +198,6 @@ function createPlayerLookupContent() {
       skillGrid.appendChild(skillDiv);
     });
 
-    // Add Total Level at the end
     const totalDiv = document.createElement("div");
     totalDiv.style.display = "flex";
     totalDiv.style.alignItems = "center";
@@ -169,7 +213,7 @@ function createPlayerLookupContent() {
     totalLabel.textContent = playerSkills["total"].level;
     totalLabel.style.color = "yellow";
 
-    totalDiv.title = `XP: ${playerSkills["total"].xp.toLocaleString()}`; // Tooltip with total XP
+    totalDiv.title = `XP: ${playerSkills["total"].xp.toLocaleString()}`;
 
     totalDiv.appendChild(totalIcon);
     totalDiv.appendChild(totalLabel);
@@ -202,4 +246,5 @@ export default function () {
     }
   };
 }
+
 export { fetchPlayerSkills };
